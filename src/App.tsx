@@ -1,21 +1,8 @@
-import React, { useContext, useEffect } from "react";
-import { sendRequest } from "./action/request.action";
-import { createStoreProvider, Store } from "./Store";
+import React from "react";
+import { LeftBar, Row } from "./component";
 import { reducers } from "./reducer";
-
-function Sub() {
-  const { state, dispatch } = useContext(Store);
-
-  function onClick() {
-    sendRequest(dispatch, "www.google.com");
-  }
-
-  return (
-    <div className="text-l" onClick={onClick}>
-      counter {JSON.stringify(state.request.responses)}
-    </div>
-  );
-}
+import { createStoreProvider } from "./Store";
+import { MainView } from "./component/MainView.component";
 
 export default function App() {
   // @TODO: Fix types here later
@@ -23,7 +10,10 @@ export default function App() {
 
   return (
     <StoreProvider>
-      <Sub />
+      <Row>
+        <LeftBar />
+        <MainView />
+      </Row>
     </StoreProvider>
   );
 }

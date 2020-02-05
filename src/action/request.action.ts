@@ -16,3 +16,11 @@ export async function sendRequest(dispatch: Dispatch<any>, url: string) {
     dispatch({ type: ActionType.REQUEST_FAILED, payload: e });
   }
 }
+
+export async function selectTemplate(dispatch: Dispatch<any>, id: string) {
+  dispatch({ type: ActionType.SELECT_TEMPLATE, payload: id });
+}
+
+export async function addNewTemplate(dispatch: Dispatch<any>) {
+  dispatch({ type: ActionType.ADD_NEW_TEMPLATE });
+}
