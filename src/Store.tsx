@@ -2,14 +2,32 @@ import React, { useReducer, createContext } from "react";
 
 export const Store = createContext<any>({});
 
-export const createStoreProvider = (
-  initialState: any = {},
-  reducers: any[]
-) => ({ children }: any) => {
-  const combinedReducer = (state: any, action: any) =>
-    reducers.reduce((prevState, reducer) => reducer(prevState, action), state);
+function next(
+  stateMap: any,
+  reducers: Record<string, (state: any, action: any) => any>,
+  action: any
+) {
+  const entries = Object.entries(reducers);
 
-  const [state, dispatch] = useReducer(combinedReducer, initialState);
+  let newState: any = {};
+  for (let i = 0; i < entries.length; i++) {
+    const [k, r] = entries[i];
+    newState[k] = r(stateMap[k], action);
+  }
+
+  return newState;
+}
+
+export const createStoreProvider = (reducers: Record<string, () => any>) => ({
+  children
+}: any) => {
+  const combinedReducer = (state: any, action: any) =>
+    next(state, reducers, action);
+
+  const [state, dispatch] = useReducer(
+    combinedReducer,
+    next({}, reducers, { type: "INIT" })
+  );
 
   return (
     <Store.Provider value={{ state, dispatch }}>{children}</Store.Provider>

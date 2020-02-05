@@ -1,35 +1,25 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
+import { sendRequest } from "./action/request.action";
 import { createStoreProvider, Store } from "./Store";
-import produce from "immer";
+import { reducers } from "./reducer";
 
 function Sub() {
   const { state, dispatch } = useContext(Store);
 
   function onClick() {
-    dispatch({ type: "SAMPLE ACTION" });
+    sendRequest(dispatch, "www.google.com");
   }
 
   return (
     <div className="text-l" onClick={onClick}>
-      counter {state.counter}
+      counter {JSON.stringify(state.request.responses)}
     </div>
   );
 }
 
-const reducers = [
-  (state: any, action: any) => {
-    return produce(state, (draft: any) => {
-      switch (action.type) {
-        default:
-          break;
-      }
-      draft.counter++;
-    });
-  }
-];
-
 export default function App() {
-  const StoreProvider = createStoreProvider({ counter: 0 }, reducers);
+  // @TODO: Fix types here later
+  const StoreProvider = createStoreProvider(reducers as any);
 
   return (
     <StoreProvider>
