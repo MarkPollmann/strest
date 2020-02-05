@@ -26,7 +26,7 @@
  * ```
  */
 
-import "./index.css";
+import "../assets/base.css";
 import React from "react";
 import { render } from "react-dom";
 import App from "./App";
