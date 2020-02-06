@@ -47,7 +47,9 @@ export function requestReducer(
         draft.templates.push({
           id,
           name: "",
-          url: null
+          url: null,
+          count: 1,
+          concurrency: 1
         });
 
         draft.responses[id] = [];
@@ -67,6 +69,22 @@ export function requestReducer(
 
           draft.templates[index] = template;
         }
+        break;
+      }
+
+      case ActionType.DELETE_TEMPLATE: {
+        let index = draft.templates.findIndex(
+          (t: any) => t.id === action.payload
+        );
+        draft.templates.splice(index, 1);
+        delete draft.responses[action.payload];
+        break;
+      }
+
+      case ActionType.START_THE_TRAIN: {
+        let responses: any = {};
+        Object.keys(draft.responses).forEach(k => (responses[k] = []));
+        draft.responses = responses;
         break;
       }
 

@@ -1,6 +1,12 @@
 import React, { useReducer, createContext } from "react";
+import _ from "lodash";
 
-export const Store = createContext<any>({});
+export let Store = createContext<any>({});
+
+let persistedStateString = localStorage.getItem("stressman_state");
+let persistedState = persistedStateString
+  ? JSON.parse(persistedStateString)
+  : {};
 
 function next(
   stateMap: any,
@@ -18,15 +24,24 @@ function next(
   return newState;
 }
 
+const persist = _.debounce((state: any) => {
+  localStorage.setItem("stressman_state", JSON.stringify(state));
+}, 500);
+
 export const createStoreProvider = (reducers: Record<string, () => any>) => ({
   children
 }: any) => {
-  const combinedReducer = (state: any, action: any) =>
-    next(state, reducers, action);
+  const combinedReducer = (state: any, action: any) => {
+    const nextState = next(state, reducers, action);
+    // persist state for next pass
+    persist(nextState);
+
+    return nextState;
+  };
 
   const [state, dispatch] = useReducer(
     combinedReducer,
-    next({}, reducers, { type: "INIT" })
+    next(persistedState || {}, reducers, { type: "INIT" })
   );
 
   return (

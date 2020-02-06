@@ -30,7 +30,9 @@ function consumeTemplate(dispatch: Dispatch<any>, template: any) {
 
 export async function startTheTrain(dispatch: Dispatch<any>, templates: any[]) {
   dispatch({ type: ActionType.START_THE_TRAIN });
-  templates.forEach(template => consumeTemplate(dispatch, template));
+  for (let template of templates) {
+    await consumeTemplate(dispatch, template);
+  }
 }
 
 export async function sendRequest(
@@ -87,4 +89,8 @@ export function updateTemplate(
       fields
     }
   });
+}
+
+export function deleteTemplate(dispatch: any, templateId: string) {
+  dispatch({ type: ActionType.DELETE_TEMPLATE, payload: templateId });
 }

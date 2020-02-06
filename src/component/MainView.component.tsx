@@ -3,7 +3,11 @@ import { Store } from "../Store";
 import { getSelectedTemplate } from "../reducer/request.reducer";
 import { Row, Dropdown } from ".";
 import { Card } from "./Card.component";
-import { sendRequest } from "../action/request.action";
+import {
+  sendRequest,
+  updateTemplate,
+  deleteTemplate
+} from "../action/request.action";
 
 enum Tab {
   RESULTS = "RESULTS",
@@ -25,6 +29,22 @@ export function MainView() {
     sendRequest(dispatch, template.url, template.id);
   }
 
+  function updateTemplateName(event: React.ChangeEvent<HTMLInputElement>) {
+    updateTemplate(dispatch, template.id, {
+      name: event.target.value
+    });
+  }
+
+  function updateTemplateUrl(event: React.ChangeEvent<HTMLInputElement>) {
+    updateTemplate(dispatch, template.id, {
+      url: event.target.value
+    });
+  }
+
+  function removeTemplate() {
+    deleteTemplate(dispatch, template.id);
+  }
+
   return (
     <div className="w-full h-screen flex flex-col">
       <div className="p-4">
@@ -35,7 +55,8 @@ export function MainView() {
               type="text"
               className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-4 block w-128 appearance-none leading-normal py-2"
               value={template.name}
-              placeholder="100"
+              placeholder="Request name"
+              onChange={updateTemplateName}
             />
           </div>
           <div className="flex-1 mx-4">
@@ -53,13 +74,20 @@ export function MainView() {
                 type="text"
                 className="bg-white  px-4 block w-full appearance-none leading-normal p-2"
                 value={template.url}
-                placeholder="100"
+                placeholder="https://google.com"
+                onChange={updateTemplateUrl}
               />
             </Row>
             <div className="text-sm text-blue-500 cursor-pointer">
               Switch to advanced request
             </div>
           </div>
+          <button
+            className="bg-white hover:bg-blue-400 text-gray-700 font-bold py-2 px-4 border-b-4 border border-gray-500 hover:border-gray-500 rounded my-4"
+            onClick={removeTemplate}
+          >
+            ➖ Remove
+          </button>
           <button
             className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded my-4 flex-shrink-0"
             onClick={sendOneRequest}
