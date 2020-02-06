@@ -5,9 +5,10 @@
     "jsx": "react",
     "outDir": "./dist/",
     "strict": true,
-    // "skipLibCheck": true,
+    "skipLibCheck": true,
     "esModuleInterop": true,
-    "noImplicitAny": true
+    "noImplicitAny": true,
+    "typeRoots": ["src/typings", "./node_modules/@types"]
   },
   "include": ["src/**/*"]
 }

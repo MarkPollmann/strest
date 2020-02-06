@@ -1,11 +1,34 @@
 import React, { useContext } from "react";
 import { Store } from "../Store";
 import { Row } from ".";
-import { selectTemplate, addNewTemplate } from "../action/request.action";
+import {
+  selectTemplate,
+  addNewTemplate,
+  updateTemplate,
+  startTheTrain
+} from "../action/request.action";
 
 export function LeftBar() {
   let { state, dispatch } = useContext(Store);
   let selectedTemplateId = state.request.selectedTemplateId;
+
+  function updateTemplateCount(event: React.ChangeEvent<HTMLInputElement>) {
+    updateTemplate(dispatch, selectedTemplateId, {
+      count: Number.parseInt(event.target.value)
+    });
+  }
+
+  function updateTemplateConcurrency(
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
+    updateTemplate(dispatch, selectedTemplateId, {
+      concurrency: Number.parseInt(event.target.value)
+    });
+  }
+
+  function startRequestSequence() {
+    startTheTrain(dispatch, state.request.templates);
+  }
 
   return (
     <div className="w-1/4 border-r h-screen flex-shrink-0">
@@ -39,24 +62,25 @@ export function LeftBar() {
               <div>
                 <div className="py-1">
                   <div className="flex flex-row items-center">
-                    <div className="text-sm text-gray-700 pr-1">Count: </div>
+                    <div className="text-sm text-gray-700 pr-1">Send </div>
                     <input
                       type="number"
                       className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-2 block w-full appearance-none leading-normal"
                       value={template.count}
                       placeholder="100"
+                      onChange={updateTemplateCount}
                     />
-                    <div className="text-sm text-gray-700 px-2">Time: </div>
+                    <div className="text-sm text-gray-700 pr-1"> requests </div>
                     <input
                       type="number"
-                      className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-4 block w-full appearance-none leading-normal"
-                      value={template.count}
+                      className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-2 block w-full appearance-none leading-normal"
+                      value={template.concurrency}
                       placeholder="100"
+                      onChange={updateTemplateConcurrency}
                     />
                     <div className="text-sm text-gray-700 px-2">
-                      Concurrent:{" "}
+                      concurrently
                     </div>
-                    <input type="checkbox" className="py-1" />
                   </div>
 
                   <Row vertical="center">
@@ -86,9 +110,9 @@ export function LeftBar() {
         </button>
         <button
           className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded my-4"
-          onClick={() => addNewTemplate(dispatch)}
+          onClick={startRequestSequence}
         >
-          🔫 Send All
+          🚄 Send All
         </button>
       </Row>
     </div>

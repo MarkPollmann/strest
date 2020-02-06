@@ -3,17 +3,24 @@ import { ActionType } from "../action/ActionType.enum";
 import uuid = require("uuid");
 
 const requestInitialState = {
-  responses: [],
+  responses: {
+    "123": []
+  },
   templates: [
-    { id: "123", name: "login", url: "https://api.foo.com/v1/login", count: 1 }
+    {
+      id: "123",
+      name: "login",
+      url: "https://google.com",
+      count: 1,
+      order: 0,
+      concurrency: 1
+    }
   ],
   selectedTemplateId: "123"
 };
 
 // Selectors
 export function getSelectedTemplate(state: any) {
-  console.warn("get selected Template", state);
-
   return state.request.templates.find(
     (template: any) => template.id === state.request.selectedTemplateId
   );
@@ -26,7 +33,7 @@ export function requestReducer(
   return produce(state, (draft: any) => {
     switch (action.type) {
       case ActionType.REQUEST_RETURNED: {
-        draft.responses.push(action.payload);
+        draft.responses[action.payload.templateId].push(action.payload);
         break;
       }
 
@@ -36,11 +43,30 @@ export function requestReducer(
       }
 
       case ActionType.ADD_NEW_TEMPLATE: {
+        let id = uuid();
         draft.templates.push({
-          id: uuid(),
+          id,
           name: "",
           url: null
         });
+
+        draft.responses[id] = [];
+        break;
+      }
+
+      case ActionType.UPDATE_TEMPLATE: {
+        let index = draft.templates.findIndex(
+          (t: any) => t.id === action.payload.id
+        );
+
+        if (index >= 0) {
+          let template = {
+            ...draft.templates[index],
+            ...action.payload.fields
+          };
+
+          draft.templates[index] = template;
+        }
         break;
       }
 

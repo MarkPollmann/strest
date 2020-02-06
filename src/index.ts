@@ -13,7 +13,8 @@ const createWindow = () => {
     height: 600,
     width: 800,
     webPreferences: {
-      webSecurity: false
+      webSecurity: false,
+      nodeIntegration: true
     }
   });
 

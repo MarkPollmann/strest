@@ -70,6 +70,7 @@
     "@electron-forge/maker-zip": "6.0.0-beta.48",
     "@electron-forge/plugin-webpack": "6.0.0-beta.48",
     "@marshallofsound/webpack-asset-relocator-loader": "^0.5.0",
+    "@types/better-queue": "^3.8.2",
     "@types/react": "^16.9.19",
     "@types/react-dom": "^16.9.5",
     "@types/uuid": "^3.4.7",
@@ -89,6 +90,8 @@
     "typescript": "^3.7.0"
   },
   "dependencies": {
+    "better-queue": "^3.8.10",
+    "better-queue-memory": "^1.0.4",
     "electron-squirrel-startup": "^1.0.0",
     "immer": "^5.3.4",
     "react": "^16.12.0",
