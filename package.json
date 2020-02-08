@@ -71,6 +71,7 @@
     "@electron-forge/plugin-webpack": "6.0.0-beta.48",
     "@marshallofsound/webpack-asset-relocator-loader": "^0.5.0",
     "@types/better-queue": "^3.8.2",
+    "@types/chart.js": "^2.9.12",
     "@types/lodash": "^4.14.149",
     "@types/react": "^16.9.19",
     "@types/react-dom": "^16.9.5",
@@ -93,10 +94,12 @@
   "dependencies": {
     "better-queue": "^3.8.10",
     "better-queue-memory": "^1.0.4",
+    "chart.js": "^2.9.3",
     "electron-squirrel-startup": "^1.0.0",
     "immer": "^5.3.4",
     "lodash": "^4.17.15",
     "react": "^16.12.0",
+    "react-chartjs-2": "^2.9.0",
     "react-dom": "^16.12.0",
     "uuid": "^3.4.0"
   }

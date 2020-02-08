@@ -26,6 +26,10 @@ export function getSelectedTemplate(state: any) {
   );
 }
 
+export function getSelectedTemplateResponses(state: any) {
+  return state.request.responses[state.request.selectedTemplateId];
+}
+
 export function requestReducer(
   state: any = requestInitialState,
   action: { type: ActionType; payload: any }

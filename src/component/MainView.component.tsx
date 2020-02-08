@@ -1,13 +1,16 @@
 import React, { useContext, useState } from "react";
 import { Store } from "../Store";
-import { getSelectedTemplate } from "../reducer/request.reducer";
-import { Row, Dropdown } from ".";
-import { Card } from "./Card.component";
+import {
+  getSelectedTemplate,
+  getSelectedTemplateResponses
+} from "../reducer/request.reducer";
+import { Row, Dropdown, ResponseDialogs } from ".";
 import {
   sendRequest,
   updateTemplate,
   deleteTemplate
 } from "../action/request.action";
+import { ResponseTimeChart } from "./ResponseTimeChart.component";
 
 enum Tab {
   RESULTS = "RESULTS",
@@ -20,6 +23,7 @@ export function MainView() {
   let [tab, setTab] = useState<Tab>(Tab.RESPONSES);
 
   let template = getSelectedTemplate(state);
+  let responses = getSelectedTemplateResponses(state);
 
   if (!template) {
     return <div>No template selected</div>;
@@ -123,51 +127,8 @@ export function MainView() {
         {/* Analysis */}
         {tab === Tab.RESULTS && (
           <div className="p-4">
-            <Row horizontal="space-between">
-              <Card>
-                <div className="text-lg">Response times</div>
-                <Row>
-                  <div>Average</div>
-                  <div>200ms</div>
-                </Row>
-                <Row>
-                  <div>min</div>
-                  <div>150ms</div>
-                </Row>
-                <Row>
-                  <div>max</div>
-                  <div>300ms</div>
-                </Row>
-              </Card>
-
-              <Card>
-                <div className="text-lg">Response Counts</div>
-                <Row>
-                  <div>2XX</div>
-                  <div>1350</div>
-                </Row>
-                <Row>
-                  <div>4XX</div>
-                  <div>300</div>
-                </Row>
-                <Row>
-                  <div>5XX</div>
-                  <div>10</div>
-                </Row>
-              </Card>
-
-              <Card>
-                <div className="text-lg">Bandwidth</div>
-                <Row>
-                  <div>Sent</div>
-                  <div>300kb</div>
-                </Row>
-                <Row>
-                  <div>Received</div>
-                  <div>400kb</div>
-                </Row>
-              </Card>
-            </Row>
+            <ResponseDialogs responses={responses} />
+            <ResponseTimeChart responses={responses} />
           </div>
         )}
 
@@ -184,44 +145,42 @@ export function MainView() {
                 </tr>
               </thead>
               <tbody>
-                {state.request.responses[template.id].map(
-                  (response: any, idx: number) => {
-                    return (
-                      <tr key={`response-row-${idx}`}>
-                        <td className="border px-4 py-2">{idx}</td>
-                        <td className="border px-4 py-2">{response.status}</td>
-                        <td className="border px-4 py-2 tooltip">
-                          <div className="tooltip-text border bg-white rounded p-3 -mt-6 -mr-6 rounded">
-                            <span className="text-gray-500">
-                              timestamps: {response.startedAt.toString()} -{" "}
-                              {response.endedAt.toString()}
-                            </span>
-                          </div>
-                          {response.time}
-                        </td>
-                        <td className="border px-4 py-2 tooltip">
-                          <div className="tooltip-text border bg-white rounded p-3 -mt-6 -mr-6 rounded">
-                            <span className="text-gray-500">
-                              (Just click to copy!)
-                            </span>
-                            {/* {response.body} */}
-                          </div>
+                {responses.map((response: any, idx: number) => {
+                  return (
+                    <tr key={`response-row-${idx}`}>
+                      <td className="border px-4 py-2">{idx}</td>
+                      <td className="border px-4 py-2">{response.status}</td>
+                      <td className="border px-4 py-2 tooltip">
+                        <div className="tooltip-text border bg-white rounded p-3 -mt-6 -mr-6 rounded">
+                          <span className="text-gray-500">
+                            timestamps: {response.startedAt.toString()} -{" "}
+                            {response.endedAt.toString()}
+                          </span>
+                        </div>
+                        {response.time}
+                      </td>
+                      <td className="border px-4 py-2 tooltip">
+                        <div className="tooltip-text border bg-white rounded p-3 -mt-6 -mr-6 rounded">
+                          <span className="text-gray-500">
+                            (Just click to copy!)
+                          </span>
+                          {/* {response.body} */}
+                        </div>
 
-                          {response.body?.substring(0, 30)}
-                        </td>
-                        <td className="border px-4 py-2 tooltip">
-                          <div className="tooltip-text border bg-white rounded p-3 -mt-6 -mr-6 rounded">
-                            <span className="text-gray-500">
-                              (Just click to copy!)
-                            </span>
-                            {response.headers}
-                          </div>
-                          {response.headers?.substring(0, 30)}
-                        </td>
-                      </tr>
-                    );
-                  }
-                )}
+                        {response.body?.substring(0, 30)}
+                      </td>
+                      <td className="border px-4 py-2 tooltip">
+                        <div className="tooltip-text border bg-white rounded p-3 -mt-6 -mr-6 rounded">
+                          <span className="text-gray-500">
+                            (Just click to copy!)
+                          </span>
+                          {response.headers}
+                        </div>
+                        {response.headers?.substring(0, 30)}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
             {!state.request.responses[template.id].length && (
