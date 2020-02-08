@@ -2,10 +2,11 @@ import { Dispatch } from "react";
 import { ActionType } from "./ActionType.enum";
 import Queue, { ProcessFunctionCb } from "better-queue";
 import MemoryStore from "better-queue-memory";
+import { RequestType } from "../reducer/request.reducer";
 
 function consumeTemplate(dispatch: Dispatch<any>, template: any) {
   async function boundedSend({ template }: any, cb: ProcessFunctionCb<null>) {
-    await sendRequest(dispatch, template.url, template.id);
+    await sendRequest(dispatch, template);
     cb(null, null);
   }
 
@@ -35,16 +36,19 @@ export async function startTheTrain(dispatch: Dispatch<any>, templates: any[]) {
   }
 }
 
-export async function sendRequest(
-  dispatch: Dispatch<any>,
-  url: string,
-  templateId: string
-) {
-  dispatch({ type: ActionType.SEND_REQUEST, payload: { url } });
+function getAdvancedRequest(template: any) {
+  return eval(`(prevRes) => {${template.text}}`);
+}
+
+export async function sendRequest(dispatch: Dispatch<any>, template: any) {
+  dispatch({ type: ActionType.SEND_REQUEST, payload: { url: template.url } });
 
   try {
     let initialTime = Date.now();
-    let res = await fetch(url);
+    let res =
+      template.type === RequestType.ADVANCED
+        ? await getAdvancedRequest(template)()
+        : await fetch(template.url);
 
     let finalTime = Date.now();
 
@@ -55,7 +59,7 @@ export async function sendRequest(
       payload: {
         status: res.status,
         url: res.url,
-        templateId,
+        templateId: template.id,
         body,
         headers: JSON.stringify(res.headers),
         time: finalTime - initialTime,

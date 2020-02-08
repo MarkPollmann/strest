@@ -19,3 +19,24 @@ body {
 .tooltip:hover .tooltip-text {
   visibility: visible;
 }
+
+.disabled-text {
+  background-color: #eeeeee;
+}
+
+.react-codemirror2 {
+  width: 100%;
+  margin-top: 0;
+  height: 300px;
+  position: relative;
+  background-color: red;
+}
+
+.CodeMirror {
+  position: absolute !important;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+}

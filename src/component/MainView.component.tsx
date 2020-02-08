@@ -2,7 +2,8 @@ import React, { useContext, useState } from "react";
 import { Store } from "../Store";
 import {
   getSelectedTemplate,
-  getSelectedTemplateResponses
+  getSelectedTemplateResponses,
+  RequestType
 } from "../reducer/request.reducer";
 import { Row, Dropdown, ResponseDialogs } from ".";
 import {
@@ -11,10 +12,23 @@ import {
   deleteTemplate
 } from "../action/request.action";
 import { ResponseTimeChart } from "./ResponseTimeChart.component";
+import { Controlled as CodeMirror } from "react-codemirror2";
+require("codemirror/mode/javascript/javascript");
+require("codemirror/lib/codemirror.css");
 
 enum Tab {
   RESULTS = "RESULTS",
   RESPONSES = "RESPONSES"
+}
+
+let templateTextPrefix = `// This function will be executed to generate the request, just replace the body
+// prevRes contains the response from previous request in the workflow, you can use it to set headers for example
+function getRequest(prevRes: any): Promise<any> {
+    `;
+let templateSuffix = "\n}";
+
+function wrapRequestTextInCallback(text: string) {
+  return `${templateTextPrefix}${text}${templateSuffix}`;
 }
 
 export function MainView() {
@@ -31,7 +45,7 @@ export function MainView() {
   }
 
   function sendOneRequest() {
-    sendRequest(dispatch, template.url, template.id);
+    sendRequest(dispatch, template);
   }
 
   function updateTemplateName(event: React.ChangeEvent<HTMLInputElement>) {
@@ -64,8 +78,31 @@ export function MainView() {
     deleteTemplate(dispatch, template.id);
   }
 
+  function switchType() {
+    updateTemplate(dispatch, template.id, {
+      type:
+        template.type === RequestType.BASIC
+          ? RequestType.ADVANCED
+          : RequestType.BASIC
+    });
+  }
+
+  function resetTemplate() {}
+
+  function updateTemplateText(text: string) {
+    updateTemplate(dispatch, template.id, { text });
+  }
+
+  function editorDidMount(editorRef: any) {
+    editorRef.markText(
+      { line: 0, ch: 0 },
+      { line: 2, ch: templateTextPrefix.length },
+      { className: "disabled-text" }
+    );
+  }
+
   return (
-    <div className="w-full h-screen flex flex-col">
+    <div className="w-full max-h-screen flex flex-col overflow-y-scroll">
       <div className="p-4">
         <Row>
           <div className="flex-shrink-0">
@@ -101,32 +138,68 @@ export function MainView() {
           </div>
           <div className="flex-1 mx-4">
             <div className="text-sm text-gray-700">Request</div>
-            <Row className="focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg overflow-hidden">
-              <Dropdown
-                options={[
-                  { label: "POST", value: "POST" },
-                  { label: "GET", value: "GET" }
-                ]}
-                onChange={setVerb}
-                value={verb}
-              />
-              <input
-                type="text"
-                className="bg-white  px-4 block w-full appearance-none leading-normal p-2"
-                value={template.url}
-                placeholder="https://google.com"
-                onChange={updateTemplateUrl}
-              />
+            {template.type === RequestType.BASIC ? (
+              <Row className="focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg overflow-hidden">
+                <Dropdown
+                  options={[
+                    { label: "POST", value: "POST" },
+                    { label: "GET", value: "GET" }
+                  ]}
+                  onChange={setVerb}
+                  value={verb}
+                />
+                <input
+                  type="text"
+                  className="bg-white  px-4 block w-full appearance-none leading-normal p-2"
+                  value={template.url}
+                  placeholder="https://google.com"
+                  onChange={updateTemplateUrl}
+                />
+              </Row>
+            ) : (
+              <div className="focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg overflow-hidden flex-1">
+                <CodeMirror
+                  value={wrapRequestTextInCallback(template.text)}
+                  editorDidMount={editorDidMount}
+                  options={{
+                    mode: "text/typescript"
+                  }}
+                  onBeforeChange={(editor, data, value) => {
+                    updateTemplateText(
+                      value.slice(
+                        templateTextPrefix.length,
+                        value.length - templateSuffix.length
+                      )
+                    );
+                  }}
+                />
+              </div>
+            )}
+
+            <Row>
+              <div
+                className="text-sm text-blue-500 cursor-pointer"
+                onClick={switchType}
+              >
+                {template.type === RequestType.BASIC
+                  ? "Switch to advanced request"
+                  : "Switch to basic request"}
+              </div>
+              {template.type === RequestType.ADVANCED && (
+                <div
+                  className="text-sm text-blue-500 cursor-pointer ml-3"
+                  onClick={resetTemplate}
+                >
+                  Reset
+                </div>
+              )}
             </Row>
-            <div className="text-sm text-blue-500 cursor-pointer">
-              Switch to advanced request
-            </div>
           </div>
           <button
-            className="bg-white hover:bg-blue-400 text-gray-700 font-bold py-2 px-4 border-b-4 border border-gray-500 hover:border-gray-500 rounded my-4"
+            className="bg-white hover:bg-blue-400 text-gray-700 font-bold py-2 px-4 border-b-4 border border-gray-500 hover:border-gray-500 rounded my-4 mr-2"
             onClick={removeTemplate}
           >
-            ➖ Remove
+            Delete
           </button>
           <button
             className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded my-4 flex-shrink-0"
@@ -169,7 +242,7 @@ export function MainView() {
         )}
 
         {tab === Tab.RESPONSES && (
-          <div className="overflow-y-auto max-h-full w-full p-2">
+          <div className="max-h-full w-full p-2">
             <table className="table-fixed w-full">
               <thead>
                 <tr>

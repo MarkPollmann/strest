@@ -2,6 +2,11 @@ import produce from "immer";
 import { ActionType } from "../action/ActionType.enum";
 import uuid = require("uuid");
 
+export enum RequestType {
+  BASIC = "BASIC",
+  ADVANCED = "ADVANCED"
+}
+
 const requestInitialState = {
   responses: {
     "123": []
@@ -11,6 +16,8 @@ const requestInitialState = {
       id: "123",
       name: "login",
       url: "https://google.com",
+      text: "return fetch('https://google.com')",
+      type: RequestType.BASIC,
       count: 1,
       order: 0,
       concurrency: 1

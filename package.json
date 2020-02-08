@@ -95,11 +95,13 @@
     "better-queue": "^3.8.10",
     "better-queue-memory": "^1.0.4",
     "chart.js": "^2.9.3",
+    "codemirror": "^5.51.0",
     "electron-squirrel-startup": "^1.0.0",
     "immer": "^5.3.4",
     "lodash": "^4.17.15",
     "react": "^16.12.0",
     "react-chartjs-2": "^2.9.0",
+    "react-codemirror2": "^6.0.0",
     "react-dom": "^16.12.0",
     "uuid": "^3.4.0"
   }
