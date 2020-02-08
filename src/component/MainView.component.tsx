@@ -18,9 +18,10 @@ enum Tab {
 }
 
 export function MainView() {
+  // Initial component state
   let { state, dispatch } = useContext(Store);
   let [verb, setVerb] = useState("GET");
-  let [tab, setTab] = useState<Tab>(Tab.RESPONSES);
+  let [tab, setTab] = useState<Tab>(Tab.RESULTS);
 
   let template = getSelectedTemplate(state);
   let responses = getSelectedTemplateResponses(state);
@@ -45,6 +46,20 @@ export function MainView() {
     });
   }
 
+  function updateTemplateCount(event: React.ChangeEvent<HTMLInputElement>) {
+    updateTemplate(dispatch, template.id, {
+      count: Number.parseInt(event.target.value)
+    });
+  }
+
+  function updateTemplateConcurrency(
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
+    updateTemplate(dispatch, template.id, {
+      concurrency: Number.parseInt(event.target.value)
+    });
+  }
+
   function removeTemplate() {
     deleteTemplate(dispatch, template.id);
   }
@@ -54,17 +69,38 @@ export function MainView() {
       <div className="p-4">
         <Row>
           <div className="flex-shrink-0">
-            <div className="text-sm text-gray-700 px-2">Name</div>
-            <input
-              type="text"
-              className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-4 block w-128 appearance-none leading-normal py-2"
-              value={template.name}
-              placeholder="Request name"
-              onChange={updateTemplateName}
-            />
+            <div>
+              <div className="text-sm text-gray-700 px-2">Name</div>
+              <input
+                type="text"
+                className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-4 block w-full appearance-none leading-normal py-2"
+                value={template.name}
+                placeholder="Request name"
+                onChange={updateTemplateName}
+              />
+              <div className="text-sm text-gray-700 px-2">Size/Concurrency</div>
+              <div className="flex flex-row items-center">
+                <input
+                  type="number"
+                  className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-2 mr-1 block w-24 appearance-none leading-normal"
+                  value={template.count}
+                  placeholder="100"
+                  onChange={updateTemplateCount}
+                />
+                <div className="text-sm text-gray-700 mr-3"> requests </div>
+                <input
+                  type="number"
+                  className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg mr-1 block w-12 appearance-none leading-normal"
+                  value={template.concurrency}
+                  placeholder="100"
+                  onChange={updateTemplateConcurrency}
+                />
+                <div className="text-sm text-gray-700">concurrently</div>
+              </div>
+            </div>
           </div>
           <div className="flex-1 mx-4">
-            <div className="text-sm text-gray-700">Params</div>
+            <div className="text-sm text-gray-700">Request</div>
             <Row className="focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg overflow-hidden">
               <Dropdown
                 options={[
@@ -127,7 +163,7 @@ export function MainView() {
         {/* Analysis */}
         {tab === Tab.RESULTS && (
           <div className="p-4">
-            <ResponseDialogs responses={responses} />
+            <ResponseDialogs templateId={template.id} />
             <ResponseTimeChart responses={responses} />
           </div>
         )}

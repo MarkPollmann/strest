@@ -19,6 +19,14 @@ const requestInitialState = {
   selectedTemplateId: "123"
 };
 
+function insertOrPlus1(obj: any, k: string) {
+  if (obj[k]) {
+    obj[k]++;
+  } else {
+    obj[k] = 1;
+  }
+}
+
 // Selectors
 export function getSelectedTemplate(state: any) {
   return state.request.templates.find(
@@ -28,6 +36,42 @@ export function getSelectedTemplate(state: any) {
 
 export function getSelectedTemplateResponses(state: any) {
   return state.request.responses[state.request.selectedTemplateId];
+}
+
+export function getTemplateProcessedData(state: any, templateId: string) {
+  let responses = state.request.responses[templateId];
+  let res = {
+    sum: 0,
+    min: Number.MAX_SAFE_INTEGER,
+    max: 0,
+    errorCount: 0,
+    codeCount: {},
+    average: 0,
+    errorRate: 0
+  };
+
+  if (responses.length === 0) {
+    return res;
+  }
+
+  res = responses.reduce((acc: any, r: any) => {
+    acc.sum += r.time;
+    acc.max = Math.max(acc.max, r.time);
+    acc.min = Math.min(acc.min, r.time);
+
+    if (r.status >= 300) {
+      acc.errorCount++;
+    }
+
+    insertOrPlus1(acc.codeCount, r.status);
+
+    return acc;
+  }, res);
+
+  res.average = Math.round(res.sum / responses.length);
+  res.errorRate = res.errorCount / responses.length;
+
+  return res;
 }
 
 export function requestReducer(

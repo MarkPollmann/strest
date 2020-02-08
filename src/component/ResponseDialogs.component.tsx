@@ -1,64 +1,47 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Row, Card } from ".";
+import { Store } from "../Store";
+import { getTemplateProcessedData } from "../reducer/request.reducer";
 
 interface IProps {
-  responses: any[];
-}
-
-function insertOrPlus1(obj: any, k: string) {
-  if (obj[k]) {
-    obj[k]++;
-  } else {
-    obj[k] = 1;
-  }
+  templateId: string;
 }
 
 export function ResponseDialogs(props: IProps) {
-  let results = props.responses.reduce(
-    (acc, r) => {
-      acc.sum += r.time;
-      acc.max = Math.max(acc.max, r.time);
-      acc.min = Math.min(acc.min, r.time);
-
-      insertOrPlus1(acc.codeCount, r.status);
-
-      return acc;
-    },
-    {
-      sum: 0,
-      min: Number.MAX_SAFE_INTEGER,
-      max: 0,
-      codeCount: {}
-    }
-  );
-
-  results.average = results.sum / props.responses.length;
+  let { state } = useContext(Store);
+  let processedData = getTemplateProcessedData(state, props.templateId);
 
   return (
-    <Row horizontal="space-between">
+    <Row horizontal="space-around">
       <Card>
-        <div className="text-lg">Response times</div>
-        <Row>
+        <div className="text-lg">Response Times</div>
+        <Row horizontal="space-between">
           <div>Average</div>
-          <div>{results.average}ms</div>
+          <div>
+            <span className="font-bold">{processedData.average}</span>ms
+          </div>
         </Row>
-        <Row>
-          <div>min</div>
-          <div>{results.min}ms</div>
+        <Row horizontal="space-between">
+          <div>Min value</div>
+          <div>
+            <span className="font-bold">{processedData.min}</span>ms
+          </div>
         </Row>
-        <Row>
-          <div>max</div>
-          <div>{results.max}ms</div>
+        <Row horizontal="space-between">
+          <div>Max value</div>
+          <div>
+            <span className="font-bold">{processedData.max}</span>ms
+          </div>
         </Row>
       </Card>
 
       <Card>
         <div className="text-lg">Response Counts</div>
-        {Object.entries(results.codeCount).map(([k, v]: any) => {
+        {Object.entries(processedData.codeCount).map(([k, v]: any) => {
           return (
             <Row key={`code-count-${k}`}>
               <div className="flex-1">{k}</div>
-              <div>{v}</div>
+              <div className="font-bold">{v}</div>
             </Row>
           );
         })}
@@ -66,13 +49,17 @@ export function ResponseDialogs(props: IProps) {
 
       <Card>
         <div className="text-lg">Bandwidth</div>
-        <Row>
+        <Row horizontal="space-between">
           <div>Sent</div>
-          <div>300kb</div>
+          <div>
+            <span className="font-bold">{processedData.max}</span>kb
+          </div>
         </Row>
-        <Row>
+        <Row horizontal="space-between">
           <div>Received</div>
-          <div>400kb</div>
+          <div>
+            <span className="font-bold">{processedData.max}</span>kb
+          </div>
         </Row>
       </Card>
     </Row>
