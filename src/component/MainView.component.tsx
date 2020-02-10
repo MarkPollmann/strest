@@ -3,7 +3,8 @@ import { Store } from "../Store";
 import {
   getSelectedTemplate,
   getSelectedTemplateResponses,
-  RequestType
+  RequestType,
+  HttpVerb
 } from "../reducer/request.reducer";
 import { Row, Dropdown, ResponseDialogs } from ".";
 import {
@@ -21,10 +22,12 @@ enum Tab {
   RESPONSES = "RESPONSES"
 }
 
-let templateTextPrefix = `// This function will be executed to generate the request, just replace the body
+let templateTextPrefix = `import chance from 'chance'; // use chance to generate random values, ex: chance.string()
+
+// This function will be executed to generate the request, just replace the body
 // prevRes contains the response from previous responses in the workflow, you can use it to set headers for example
 // Read about fetch: https://developers.google.com/web/updates/2015/03/introduction-to-fetch
-async function getRequest(previousResponses: any[]): Promise<any> {
+function getRequest(previousResponses: any[]): Promise<any> {
     `;
 let templateSuffix = "\n}";
 
@@ -35,7 +38,6 @@ function wrapRequestTextInCallback(text: string) {
 export function MainView() {
   // Initial component state
   let { state, dispatch } = useContext(Store);
-  let [verb, setVerb] = useState("GET");
   let [tab, setTab] = useState<Tab>(Tab.RESULTS);
 
   let template = getSelectedTemplate(state);
@@ -85,27 +87,25 @@ export function MainView() {
         template.type === RequestType.BASIC
           ? RequestType.ADVANCED
           : RequestType.BASIC,
-      text: template.text || `return fetch('${template.url}');`
+      text:
+        template.text ||
+        `return fetch('${template.url}', {method: '${template.verb}'});`
     });
   }
 
-  function resetTemplate() {}
+  // function resetTemplate() {}
 
   function updateTemplateText(text: string) {
     updateTemplate(dispatch, template.id, { text });
   }
 
-  function editorDidMount(editorRef: any) {
-    editorRef.markText(
-      { line: 0, ch: 0 },
-      { line: 3, ch: templateTextPrefix.length },
-      { className: "disabled-text" }
-    );
+  function updateTemplateVerb(verb: HttpVerb) {
+    updateTemplate(dispatch, template.id, { verb });
   }
 
   return (
-    <div className="w-full max-h-screen flex flex-col overflow-y-scroll">
-      <div className="p-4">
+    <div className="w-full max-h-screen flex flex-col pt-64 relative">
+      <div className="p-4 absolute bg-white top-0 right-0 left-0">
         <Row>
           <div className="flex-shrink-0">
             <div>
@@ -144,11 +144,11 @@ export function MainView() {
               <Row className="focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg overflow-hidden">
                 <Dropdown
                   options={[
-                    { label: "POST", value: "POST" },
-                    { label: "GET", value: "GET" }
+                    { label: "POST", value: HttpVerb.POST },
+                    { label: "GET", value: HttpVerb.GET }
                   ]}
-                  onChange={setVerb}
-                  value={verb}
+                  onChange={updateTemplateVerb}
+                  value={template.verb}
                 />
                 <input
                   type="text"
@@ -175,10 +175,13 @@ export function MainView() {
                     );
                   }}
                 />
-                {!!template.error && <div>{template.error}</div>}
               </div>
             )}
-
+            {!!template.error && (
+              <div className="text-red-500 text-sm">
+                Error: {template.error}
+              </div>
+            )}
             <Row>
               <div
                 className="text-sm text-blue-500 cursor-pointer"
@@ -191,7 +194,7 @@ export function MainView() {
               {template.type === RequestType.ADVANCED && (
                 <div
                   className="text-sm text-blue-500 cursor-pointer ml-3"
-                  onClick={resetTemplate}
+                  // onClick={resetTemplate}
                 >
                   Reset
                 </div>
@@ -214,7 +217,7 @@ export function MainView() {
       </div>
       {/* Main Content */}
 
-      <div className="h-full">
+      <div className="flex-1 overflow-y-scroll">
         <ul className="flex border-b">
           <li
             className={`border-t border-r border-l ${tab === Tab.RESULTS &&
@@ -238,7 +241,7 @@ export function MainView() {
 
         {/* Analysis */}
         {tab === Tab.RESULTS && (
-          <div className="p-4">
+          <div className="p-4 flex-1">
             <ResponseDialogs templateId={template.id} />
             <ResponseTimeChart responses={responses} />
           </div>

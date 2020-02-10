@@ -27,7 +27,8 @@ body {
 .react-codemirror2 {
   width: 100%;
   margin-top: 0;
-  height: 200px;
+  height: 170px;
+  overflow-y: scroll;
   position: relative;
   background-color: red;
 }

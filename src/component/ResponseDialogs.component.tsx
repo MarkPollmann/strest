@@ -24,7 +24,12 @@ export function ResponseDialogs(props: IProps) {
         <Row horizontal="space-between">
           <div>Min value</div>
           <div>
-            <span className="font-bold">{processedData.min}</span>ms
+            <span className="font-bold">
+              {processedData.min === Number.MAX_SAFE_INTEGER
+                ? 0
+                : processedData.min}
+            </span>
+            ms
           </div>
         </Row>
         <Row horizontal="space-between">
@@ -49,16 +54,19 @@ export function ResponseDialogs(props: IProps) {
 
       <Card>
         <div className="text-lg">Bandwidth</div>
-        <Row horizontal="space-between">
+        {/* <Row horizontal="space-between">
           <div>Sent</div>
           <div>
             <span className="font-bold">{processedData.max}</span>kb
           </div>
-        </Row>
+        </Row> */}
         <Row horizontal="space-between">
-          <div>Received</div>
+          <div>ReceivedBytes</div>
           <div>
-            <span className="font-bold">{processedData.max}</span>kb
+            <span className="font-bold">
+              {processedData.receivedBytes || 0}
+            </span>
+            kb
           </div>
         </Row>
       </Card>

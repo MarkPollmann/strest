@@ -3,6 +3,9 @@ import { ActionType } from "./ActionType.enum";
 import Queue, { ProcessFunctionCb } from "better-queue";
 import MemoryStore from "better-queue-memory";
 import { RequestType } from "../reducer/request.reducer";
+// it might be used by the user inputed text for generating the request
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import chance from "chance";
 
 function consumeTemplate(dispatch: Dispatch<any>, template: any) {
   dispatch({ type: ActionType.CONSUMING_TEMPLATE_START, payload: template.id });
@@ -42,7 +45,32 @@ export async function startTheTrain(dispatch: Dispatch<any>, templates: any[]) {
 }
 
 function getAdvancedRequest(template: any) {
-  return eval(`async (previousResponses) => {${template.text}}`);
+  return eval(`(previousResponses) => {\n${template.text}\n}`);
+}
+
+function roughSizeOfObject(object: any) {
+  let objectList = [];
+  let stack = [object];
+  let bytes = 0;
+
+  while (stack.length) {
+    let value = stack.pop();
+
+    if (typeof value === "boolean") {
+      bytes += 4;
+    } else if (typeof value === "string") {
+      bytes += value.length * 2;
+    } else if (typeof value === "number") {
+      bytes += 8;
+    } else if (typeof value === "object" && objectList.indexOf(value) === -1) {
+      objectList.push(value);
+
+      for (let i in value) {
+        stack.push(value[i]);
+      }
+    }
+  }
+  return bytes;
 }
 
 export async function sendRequest(dispatch: Dispatch<any>, template: any) {
@@ -52,10 +80,10 @@ export async function sendRequest(dispatch: Dispatch<any>, template: any) {
     let initialTime = Date.now();
     let res;
     if (template.type === RequestType.ADVANCED) {
-      let callback = getAdvancedRequest(template)();
+      let callback = getAdvancedRequest(template);
       let callbackRes = callback();
       // check if returned value is a promise
-      if (Promise.resolve(callbackRes) !== callbackRes) {
+      if (typeof callbackRes.then !== "function") {
         throw new Error("NO_PROMISE");
       }
       res = await callbackRes;
@@ -67,6 +95,9 @@ export async function sendRequest(dispatch: Dispatch<any>, template: any) {
 
     let body = await res.text();
 
+    let byteSizeReceived =
+      roughSizeOfObject(res.headers) + roughSizeOfObject(body);
+
     dispatch({
       type: ActionType.REQUEST_RETURNED,
       payload: {
@@ -77,7 +108,8 @@ export async function sendRequest(dispatch: Dispatch<any>, template: any) {
         headers: JSON.stringify(res.headers),
         time: finalTime - initialTime,
         startedAt: initialTime,
-        endedAt: finalTime
+        endedAt: finalTime,
+        byteSizeReceived
       }
     });
   } catch (e) {
@@ -93,6 +125,13 @@ export async function sendRequest(dispatch: Dispatch<any>, template: any) {
         break;
 
       default:
+        dispatch({
+          type: ActionType.TEMPLATE_ERROR,
+          payload: {
+            templateId: template.id,
+            errorMsg: e.toString()
+          }
+        });
         break;
     }
 

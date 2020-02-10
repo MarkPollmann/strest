@@ -1,6 +1,14 @@
 import React, { useReducer, createContext } from "react";
 import _ from "lodash";
 
+let debug = false;
+
+function log(...msgs: any[]) {
+  if (debug) {
+    console.log("STORE:", ...msgs);
+  }
+}
+
 export let Store = createContext<any>({});
 
 let persistedStateString = localStorage.getItem("stressman_state");
@@ -32,6 +40,7 @@ export const createStoreProvider = (reducers: Record<string, () => any>) => ({
   children
 }: any) => {
   const combinedReducer = (state: any, action: any) => {
+    log("Action Received", action);
     const nextState = next(state, reducers, action);
     // persist state for next pass
     persist(nextState);

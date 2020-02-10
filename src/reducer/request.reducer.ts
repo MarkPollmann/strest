@@ -7,6 +7,14 @@ export enum RequestType {
   ADVANCED = "ADVANCED"
 }
 
+export enum HttpVerb {
+  POST = "POST",
+  GET = "GET",
+  PUT = "PUT",
+  DELETE = "DELETE",
+  OPTIONS = "OPTIONS"
+}
+
 const requestInitialState = {
   responses: {
     "123": []
@@ -15,6 +23,7 @@ const requestInitialState = {
     {
       id: "123",
       name: "login",
+      verb: HttpVerb.GET,
       url: "https://google.com",
       text: "return fetch('https://google.com')",
       type: RequestType.BASIC,
@@ -61,7 +70,8 @@ export function getTemplateProcessedData(state: any, templateId: string) {
     errorCount: 0,
     codeCount: {},
     average: 0,
-    errorRate: 0
+    errorRate: 0,
+    receivedBytes: 0
   };
 
   if (responses.length === 0) {
@@ -72,6 +82,7 @@ export function getTemplateProcessedData(state: any, templateId: string) {
     acc.sum += r.time;
     acc.max = Math.max(acc.max, r.time);
     acc.min = Math.min(acc.min, r.time);
+    acc.receivedBytes += r.byteSizeReceived;
 
     if (r.status >= 300) {
       acc.errorCount++;
@@ -112,7 +123,8 @@ export function requestReducer(
           url: null,
           count: 1,
           concurrency: 1,
-          type: RequestType.BASIC
+          type: RequestType.BASIC,
+          verb: HttpVerb.GET
         });
 
         draft.responses[id] = [];
@@ -153,6 +165,8 @@ export function requestReducer(
 
       case ActionType.CONSUMING_TEMPLATE_START:
         draft.currentTemplateConsumed = action.payload;
+        draft.templates.find((t: any) => t.id === action.payload).error = null;
+
         break;
 
       case ActionType.CONSUMING_TEMPLATE_END:

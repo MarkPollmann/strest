@@ -336,6 +336,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/chance@^1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@types/chance/-/chance-1.0.8.tgz#48e0a5648f54487a9128915fe090154fb1a2f348"
+  integrity sha512-S1VWROFGexiUYyBFsP0NRjp6PkJ4rKECQ3HQJ0cJKW/2BcNyas9lXATRdnTNnN4CsICjEXTltAalAo8dJQQLKg==
+
 "@types/chart.js@^2.9.12":
   version "2.9.12"
   resolved "https://registry.yarnpkg.com/@types/chart.js/-/chart.js-2.9.12.tgz#3990a44faa06722625524a6d039b9bf15b650910"
@@ -1303,6 +1308,11 @@ chalk@^3.0.0:
   dependencies:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
+
+chance@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/chance/-/chance-1.1.4.tgz#d8743bf8e40bb05e024c305ca1ff441195eb23db"
+  integrity sha512-pXPDSu3knKlb6H7ahQfpq//J9mSOxYK8SMtp8MV/nRJh8aLRDIl0ipLH8At8+nVogVwtvPZzyIzY/EbcY/cLuQ==
 
 chardet@^0.7.0:
   version "0.7.0"
