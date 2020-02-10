@@ -1,15 +1,16 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Row, Card } from ".";
-import { Store } from "../Store";
+
 import { getTemplateProcessedData } from "../reducer/request.reducer";
+import { connect } from "react-redux";
 
 interface IProps {
   templateId: string;
+  processedData: any;
 }
 
-export function ResponseDialogs(props: IProps) {
-  let { state } = useContext(Store);
-  let processedData = getTemplateProcessedData(state, props.templateId);
+function _ResponseDialogs(props: IProps) {
+  let { processedData } = props;
 
   return (
     <Row horizontal="space-around">
@@ -73,3 +74,11 @@ export function ResponseDialogs(props: IProps) {
     </Row>
   );
 }
+
+function mstp(state: any, ownProps: any) {
+  return {
+    processedData: getTemplateProcessedData(state, ownProps.templateId)
+  };
+}
+
+export let ResponseDialogs = connect(mstp)(_ResponseDialogs);

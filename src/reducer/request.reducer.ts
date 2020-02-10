@@ -1,6 +1,7 @@
 import produce from "immer";
 import { ActionType } from "../action/ActionType.enum";
 import uuid = require("uuid");
+import { AnyAction } from "redux";
 
 export enum RequestType {
   BASIC = "BASIC",
@@ -60,6 +61,10 @@ export function getCurrentTemplateConsumed(state: any) {
   return state.request.currentTemplateConsumed;
 }
 
+export function getTemplates(state: any) {
+  return state.request.templates;
+}
+
 // Reducer
 export function getTemplateProcessedData(state: any, templateId: string) {
   let responses = state.request.responses[templateId];
@@ -101,7 +106,7 @@ export function getTemplateProcessedData(state: any, templateId: string) {
 
 export function requestReducer(
   state: any = requestInitialState,
-  action: { type: ActionType; payload: any }
+  action: AnyAction
 ) {
   return produce(state, (draft: any) => {
     switch (action.type) {

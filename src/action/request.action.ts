@@ -1,16 +1,16 @@
-import { Dispatch } from "react";
 import { ActionType } from "./ActionType.enum";
 import Queue, { ProcessFunctionCb } from "better-queue";
 import MemoryStore from "better-queue-memory";
 import { RequestType } from "../reducer/request.reducer";
+import { dispatch, store } from "../Store";
 // it might be used by the user inputed text for generating the request
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import chance from "chance";
 
-function consumeTemplate(dispatch: Dispatch<any>, template: any) {
+function consumeTemplate(template: any) {
   dispatch({ type: ActionType.CONSUMING_TEMPLATE_START, payload: template.id });
   async function boundedSend({ template }: any, cb: ProcessFunctionCb<null>) {
-    await sendRequest(dispatch, template);
+    await sendRequest(template);
     cb(null, null);
   }
 
@@ -37,16 +37,12 @@ function consumeTemplate(dispatch: Dispatch<any>, template: any) {
   });
 }
 
-export async function startTheTrain(
-  dispatch: Dispatch<any>,
-  templates: any[],
-  getState: any
-) {
+export async function startTheTrain() {
+  let state = store.getState();
+  let templates = state.request.templates;
   dispatch({ type: ActionType.START_THE_TRAIN });
   for (let template of templates) {
-    console.warn("consuming template state", getState());
-
-    await consumeTemplate(dispatch, template);
+    await consumeTemplate(template);
   }
 }
 
@@ -79,7 +75,7 @@ function roughSizeOfObject(object: any) {
   return bytes;
 }
 
-export async function sendRequest(dispatch: Dispatch<any>, template: any) {
+export async function sendRequest(template: any) {
   dispatch({ type: ActionType.SEND_REQUEST, payload: { url: template.url } });
 
   try {
@@ -145,19 +141,15 @@ export async function sendRequest(dispatch: Dispatch<any>, template: any) {
   }
 }
 
-export async function selectTemplate(dispatch: Dispatch<any>, id: string) {
+export async function selectTemplate(id: string) {
   dispatch({ type: ActionType.SELECT_TEMPLATE, payload: id });
 }
 
-export async function addNewTemplate(dispatch: Dispatch<any>) {
+export async function addNewTemplate() {
   dispatch({ type: ActionType.ADD_NEW_TEMPLATE });
 }
 
-export function updateTemplate(
-  dispatch: Dispatch<any>,
-  templateId: string,
-  fields: any
-) {
+export function updateTemplate(templateId: string, fields: any) {
   dispatch({
     type: ActionType.UPDATE_TEMPLATE,
     payload: {
@@ -167,6 +159,6 @@ export function updateTemplate(
   });
 }
 
-export function deleteTemplate(dispatch: any, templateId: string) {
+export function deleteTemplate(templateId: string) {
   dispatch({ type: ActionType.DELETE_TEMPLATE, payload: templateId });
 }

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Row } from ".";
 import {
   addNewTemplate,
@@ -8,17 +8,22 @@ import {
 } from "../action/request.action";
 import {
   getTemplateProcessedData,
-  getCurrentTemplateConsumed
+  getCurrentTemplateConsumed,
+  getSelectedTemplate,
+  getTemplates
 } from "../reducer/request.reducer";
-import { Store } from "../Store";
+import { connect } from "react-redux";
 
-export function LeftBar() {
-  let { state, dispatch, getState } = useContext(Store);
-  let selectedTemplateId = state.request.selectedTemplateId;
-  let currentTemplateConsumed = getCurrentTemplateConsumed(state);
+interface IProps {
+  selectedTemplate: any;
+  currentTemplateConsumed: any;
+  templates: any;
+  processedData: any;
+}
 
+function _LeftBar(props: IProps) {
   function updateTemplateCount(event: React.ChangeEvent<HTMLInputElement>) {
-    updateTemplate(dispatch, selectedTemplateId, {
+    updateTemplate(props.selectedTemplate.id, {
       count: Number.parseInt(event.target.value)
     });
   }
@@ -26,13 +31,13 @@ export function LeftBar() {
   function updateTemplateConcurrency(
     event: React.ChangeEvent<HTMLInputElement>
   ) {
-    updateTemplate(dispatch, selectedTemplateId, {
+    updateTemplate(props.selectedTemplate.id, {
       concurrency: Number.parseInt(event.target.value)
     });
   }
 
   function startRequestSequence() {
-    startTheTrain(dispatch, state.request.templates, getState);
+    startTheTrain();
   }
 
   return (
@@ -40,15 +45,14 @@ export function LeftBar() {
       <div className="uppercase tracking-wide text-sm text-blue-600 font-bold p-2 border-b">
         Workflow
       </div>
-      {state.request.templates.map((template: any) => {
-        let processedData = getTemplateProcessedData(state, template.id);
+      {props.templates.map((template: any) => {
         return (
           <div
             key={template.id}
             className={`border-b cursor-pointer ${
-              template.id === selectedTemplateId ? "bg-blue-100" : "bg-white"
+              template.id === getSelectedTemplate ? "bg-blue-100" : "bg-white"
             }`}
-            onClick={() => selectTemplate(dispatch, template.id)}
+            onClick={() => selectTemplate(template.id)}
           >
             <Row className="pt-2 px-2 flex-1">
               {!!template.name && (
@@ -59,7 +63,7 @@ export function LeftBar() {
               {!template.name && (
                 <div className="text-lg text-gray-500 flex-1">No name</div>
               )}
-              {currentTemplateConsumed === template.id && (
+              {props.currentTemplateConsumed === template.id && (
                 <div className="text-sm text-gray-500">Executing...</div>
               )}
             </Row>
@@ -98,7 +102,7 @@ export function LeftBar() {
                   >
                     <Row vertical="center">
                       <div className="text-2xl font-bold mr-1">
-                        {processedData.average}
+                        {props.processedData.average}
                       </div>
                       <div className="text-gray-700 text-sm">
                         ms avg. resp. time
@@ -107,7 +111,7 @@ export function LeftBar() {
 
                     <Row vertical="center">
                       <div className="text-2xl font-bold mr-1">
-                        {processedData.errorRate}%
+                        {props.processedData.errorRate}%
                       </div>
                       <div className="text-sm text-gray-700 text-sm">
                         error rate
@@ -124,7 +128,7 @@ export function LeftBar() {
       <Row horizontal="space-around">
         <button
           className="bg-white hover:bg-blue-400 text-gray-700 font-bold py-2 px-4 border-b-4 border border-gray-500 hover:border-gray-500 rounded my-4"
-          onClick={() => addNewTemplate(dispatch)}
+          onClick={() => addNewTemplate()}
         >
           ➕ Add request
         </button>
@@ -138,3 +142,15 @@ export function LeftBar() {
     </div>
   );
 }
+
+function mstp(state: any) {
+  let selectedTemplate = getSelectedTemplate(state);
+  return {
+    selectedTemplate,
+    processedData: getTemplateProcessedData(state, selectedTemplate.id),
+    currentTemplateConsumed: getCurrentTemplateConsumed(state),
+    templates: getTemplates(state)
+  };
+}
+
+export const LeftBar = connect(mstp)(_LeftBar);

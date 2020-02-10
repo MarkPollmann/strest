@@ -1,5 +1,5 @@
-import React, { useContext, useState } from "react";
-import { Store } from "../Store";
+import React, { useState } from "react";
+
 import {
   getSelectedTemplate,
   getSelectedTemplateResponses,
@@ -14,6 +14,7 @@ import {
 } from "../action/request.action";
 import { ResponseTimeChart } from "./ResponseTimeChart.component";
 import { Controlled as CodeMirror } from "react-codemirror2";
+import { connect } from "react-redux";
 require("codemirror/mode/javascript/javascript");
 require("codemirror/lib/codemirror.css");
 
@@ -35,36 +36,39 @@ function wrapRequestTextInCallback(text: string) {
   return `${templateTextPrefix}${text}${templateSuffix}`;
 }
 
-export function MainView() {
-  // Initial component state
-  let { state, dispatch } = useContext(Store);
-  let [tab, setTab] = useState<Tab>(Tab.RESULTS);
+interface IProps {
+  template: any;
+  responses: any;
+}
 
-  let template = getSelectedTemplate(state);
-  let responses = getSelectedTemplateResponses(state);
+export function _MainView(props: IProps) {
+  // Initial component state
+  let { template, responses } = props;
+
+  let [tab, setTab] = useState<Tab>(Tab.RESULTS);
 
   if (!template) {
     return <div>No template selected</div>;
   }
 
   function sendOneRequest() {
-    sendRequest(dispatch, template);
+    sendRequest(template);
   }
 
   function updateTemplateName(event: React.ChangeEvent<HTMLInputElement>) {
-    updateTemplate(dispatch, template.id, {
+    updateTemplate(template.id, {
       name: event.target.value
     });
   }
 
   function updateTemplateUrl(event: React.ChangeEvent<HTMLInputElement>) {
-    updateTemplate(dispatch, template.id, {
+    updateTemplate(template.id, {
       url: event.target.value
     });
   }
 
   function updateTemplateCount(event: React.ChangeEvent<HTMLInputElement>) {
-    updateTemplate(dispatch, template.id, {
+    updateTemplate(template.id, {
       count: Number.parseInt(event.target.value)
     });
   }
@@ -72,17 +76,17 @@ export function MainView() {
   function updateTemplateConcurrency(
     event: React.ChangeEvent<HTMLInputElement>
   ) {
-    updateTemplate(dispatch, template.id, {
+    updateTemplate(template.id, {
       concurrency: Number.parseInt(event.target.value)
     });
   }
 
   function removeTemplate() {
-    deleteTemplate(dispatch, template.id);
+    deleteTemplate(template.id);
   }
 
   function switchType() {
-    updateTemplate(dispatch, template.id, {
+    updateTemplate(template.id, {
       type:
         template.type === RequestType.BASIC
           ? RequestType.ADVANCED
@@ -96,11 +100,11 @@ export function MainView() {
   // function resetTemplate() {}
 
   function updateTemplateText(text: string) {
-    updateTemplate(dispatch, template.id, { text });
+    updateTemplate(template.id, { text });
   }
 
   function updateTemplateVerb(verb: HttpVerb) {
-    updateTemplate(dispatch, template.id, { verb });
+    updateTemplate(template.id, { verb });
   }
 
   return (
@@ -298,7 +302,7 @@ export function MainView() {
                 })}
               </tbody>
             </table>
-            {!state.request.responses[template.id].length && (
+            {!responses.length && (
               <div className="w-full flex justify-center items-center h-32 text-gray-500 ">
                 No responses
               </div>
@@ -309,3 +313,12 @@ export function MainView() {
     </div>
   );
 }
+
+function mstp(state: any) {
+  return {
+    template: getSelectedTemplate(state),
+    responses: getSelectedTemplateResponses(state)
+  };
+}
+
+export let MainView = connect(mstp)(_MainView);

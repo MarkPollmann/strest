@@ -1,19 +1,21 @@
 import React from "react";
 import { LeftBar, Row } from "./component";
-import { reducers } from "./reducer";
-import { createStoreProvider } from "./Store";
+import { PersistGate } from "redux-persist/integration/react";
+import { Provider } from "react-redux";
+import { store, persistor } from "./Store";
 import { MainView } from "./component/MainView.component";
 
 export default function App() {
   // @TODO: Fix types here later
-  const StoreProvider = createStoreProvider(reducers as any);
 
   return (
-    <StoreProvider>
-      <Row>
-        <LeftBar />
-        <MainView />
-      </Row>
-    </StoreProvider>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <Row>
+          <LeftBar />
+          <MainView />
+        </Row>
+      </PersistGate>
+    </Provider>
   );
 }
