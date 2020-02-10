@@ -6,12 +6,16 @@ import {
   startTheTrain,
   updateTemplate
 } from "../action/request.action";
-import { getTemplateProcessedData } from "../reducer/request.reducer";
+import {
+  getTemplateProcessedData,
+  getCurrentTemplateConsumed
+} from "../reducer/request.reducer";
 import { Store } from "../Store";
 
 export function LeftBar() {
   let { state, dispatch } = useContext(Store);
   let selectedTemplateId = state.request.selectedTemplateId;
+  let currentTemplateConsumed = getCurrentTemplateConsumed(state);
 
   function updateTemplateCount(event: React.ChangeEvent<HTMLInputElement>) {
     updateTemplate(dispatch, selectedTemplateId, {
@@ -46,14 +50,19 @@ export function LeftBar() {
             }`}
             onClick={() => selectTemplate(dispatch, template.id)}
           >
-            <div className="pt-2 px-2 flex-1">
+            <Row className="pt-2 px-2 flex-1">
               {!!template.name && (
-                <div className="text-lg text-blue-500">{template.name}</div>
+                <div className="text-lg text-blue-500 flex-1">
+                  {template.name}
+                </div>
               )}
               {!template.name && (
-                <div className="text-lg text-gray-500">No name</div>
+                <div className="text-lg text-gray-500 flex-1">No name</div>
               )}
-            </div>
+              {currentTemplateConsumed === template.id && (
+                <div className="text-sm text-gray-500">Executing...</div>
+              )}
+            </Row>
 
             <div className="p-2">
               <div className="text-sm text-gray-600">{template.url}</div>

@@ -5,6 +5,7 @@ import MemoryStore from "better-queue-memory";
 import { RequestType } from "../reducer/request.reducer";
 
 function consumeTemplate(dispatch: Dispatch<any>, template: any) {
+  dispatch({ type: ActionType.CONSUMING_TEMPLATE_START, payload: template.id });
   async function boundedSend({ template }: any, cb: ProcessFunctionCb<null>) {
     await sendRequest(dispatch, template);
     cb(null, null);
@@ -24,6 +25,10 @@ function consumeTemplate(dispatch: Dispatch<any>, template: any) {
     }
 
     queue.on("drain", () => {
+      dispatch({
+        type: ActionType.CONSUMING_TEMPLATE_END,
+        payload: template.id
+      });
       resolve();
     });
   });
@@ -37,7 +42,7 @@ export async function startTheTrain(dispatch: Dispatch<any>, templates: any[]) {
 }
 
 function getAdvancedRequest(template: any) {
-  return eval(`(prevRes) => {${template.text}}`);
+  return eval(`async (previousResponses) => {${template.text}}`);
 }
 
 export async function sendRequest(dispatch: Dispatch<any>, template: any) {
@@ -45,10 +50,18 @@ export async function sendRequest(dispatch: Dispatch<any>, template: any) {
 
   try {
     let initialTime = Date.now();
-    let res =
-      template.type === RequestType.ADVANCED
-        ? await getAdvancedRequest(template)()
-        : await fetch(template.url);
+    let res;
+    if (template.type === RequestType.ADVANCED) {
+      let callback = getAdvancedRequest(template)();
+      let callbackRes = callback();
+      // check if returned value is a promise
+      if (Promise.resolve(callbackRes) !== callbackRes) {
+        throw new Error("NO_PROMISE");
+      }
+      res = await callbackRes;
+    } else {
+      res = await fetch(template.url);
+    }
 
     let finalTime = Date.now();
 
@@ -68,7 +81,21 @@ export async function sendRequest(dispatch: Dispatch<any>, template: any) {
       }
     });
   } catch (e) {
-    console.log("request failed", e);
+    switch (e.message) {
+      case "NO_PROMISE":
+        dispatch({
+          type: ActionType.TEMPLATE_ERROR,
+          payload: {
+            templateId: template.id,
+            errorMsg: "You need to return a promise"
+          }
+        });
+        break;
+
+      default:
+        break;
+    }
+
     dispatch({ type: ActionType.REQUEST_FAILED, payload: e });
   }
 }

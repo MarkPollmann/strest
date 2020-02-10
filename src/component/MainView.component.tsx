@@ -22,8 +22,9 @@ enum Tab {
 }
 
 let templateTextPrefix = `// This function will be executed to generate the request, just replace the body
-// prevRes contains the response from previous request in the workflow, you can use it to set headers for example
-function getRequest(prevRes: any): Promise<any> {
+// prevRes contains the response from previous responses in the workflow, you can use it to set headers for example
+// Read about fetch: https://developers.google.com/web/updates/2015/03/introduction-to-fetch
+async function getRequest(previousResponses: any[]): Promise<any> {
     `;
 let templateSuffix = "\n}";
 
@@ -83,7 +84,8 @@ export function MainView() {
       type:
         template.type === RequestType.BASIC
           ? RequestType.ADVANCED
-          : RequestType.BASIC
+          : RequestType.BASIC,
+      text: template.text || `return fetch('${template.url}');`
     });
   }
 
@@ -96,7 +98,7 @@ export function MainView() {
   function editorDidMount(editorRef: any) {
     editorRef.markText(
       { line: 0, ch: 0 },
-      { line: 2, ch: templateTextPrefix.length },
+      { line: 3, ch: templateTextPrefix.length },
       { className: "disabled-text" }
     );
   }
@@ -160,7 +162,7 @@ export function MainView() {
               <div className="focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg overflow-hidden flex-1">
                 <CodeMirror
                   value={wrapRequestTextInCallback(template.text)}
-                  editorDidMount={editorDidMount}
+                  // editorDidMount={editorDidMount}
                   options={{
                     mode: "text/typescript"
                   }}
@@ -173,6 +175,7 @@ export function MainView() {
                     );
                   }}
                 />
+                {!!template.error && <div>{template.error}</div>}
               </div>
             )}
 

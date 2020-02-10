@@ -20,10 +20,12 @@ const requestInitialState = {
       type: RequestType.BASIC,
       count: 1,
       order: 0,
-      concurrency: 1
+      concurrency: 1,
+      error: null
     }
   ],
-  selectedTemplateId: "123"
+  selectedTemplateId: "123",
+  currentTemplateConsumed: null
 };
 
 function insertOrPlus1(obj: any, k: string) {
@@ -45,6 +47,11 @@ export function getSelectedTemplateResponses(state: any) {
   return state.request.responses[state.request.selectedTemplateId];
 }
 
+export function getCurrentTemplateConsumed(state: any) {
+  return state.request.currentTemplateConsumed;
+}
+
+// Reducer
 export function getTemplateProcessedData(state: any, templateId: string) {
   let responses = state.request.responses[templateId];
   let res = {
@@ -104,7 +111,8 @@ export function requestReducer(
           name: "",
           url: null,
           count: 1,
-          concurrency: 1
+          concurrency: 1,
+          type: RequestType.BASIC
         });
 
         draft.responses[id] = [];
@@ -143,6 +151,24 @@ export function requestReducer(
         break;
       }
 
+      case ActionType.CONSUMING_TEMPLATE_START:
+        draft.currentTemplateConsumed = action.payload;
+        break;
+
+      case ActionType.CONSUMING_TEMPLATE_END:
+        draft.currentTemplateConsumed = null;
+        break;
+
+      case ActionType.TEMPLATE_ERROR: {
+        let template = draft.templates.find(
+          (t: any) => t.id === action.payload.templateId
+        );
+
+        console.warn("template error!", action);
+
+        template.error = action.payload.errorMsg;
+        break;
+      }
       default:
         break;
     }

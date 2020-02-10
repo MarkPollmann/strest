@@ -8,9 +8,10 @@ interface IProps {
 export function ResponseTimeChart(props: IProps) {
   function generateChartData(canvas: any) {
     let ctx = canvas.getContext("2d");
-    let gradient = ctx.createLinearGradient(0, 0, 0, canvas.height * 2);
+
+    let gradient = ctx.createLinearGradient(0, 0, 0, 400);
     gradient.addColorStop(0, "#ff5833");
-    gradient.addColorStop(1, "#5eff33");
+    gradient.addColorStop(0.95, "#5eff33");
 
     let data = {
       labels: props.responses.map((_, idx) => idx + 1),
