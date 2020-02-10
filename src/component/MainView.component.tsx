@@ -25,11 +25,12 @@ enum Tab {
 
 let templateTextPrefix = `import chance from 'chance'; // use chance to generate random values, ex: chance.string()
 
-// This function will be executed to generate the request, just replace the body
-// prevRes contains the response from previous responses in the workflow, you can use it to set headers for example
-// Read about fetch: https://developers.google.com/web/updates/2015/03/introduction-to-fetch
-function getRequest(previousResponses: any[]): Promise<any> {
-    `;
+// This function will be executed to generate the request
+// resp. chain contains the response from previous responses in the workflow
+function getRequest(
+  responseChain: {status: number, body: string, headers: any}[]
+): Promise<any> {
+  `;
 let templateSuffix = "\n}";
 
 function wrapRequestTextInCallback(text: string) {
@@ -52,7 +53,7 @@ export function _MainView(props: IProps) {
   }
 
   function sendOneRequest() {
-    sendRequest(template);
+    sendRequest(template, []);
   }
 
   function updateTemplateName(event: React.ChangeEvent<HTMLInputElement>) {

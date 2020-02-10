@@ -7,10 +7,15 @@ import { dispatch, store } from "../Store";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import chance from "chance";
 
-function consumeTemplate(template: any) {
+function getRandomElement(xs: any[]) {
+  let i = Math.floor(Math.random() * xs.length);
+  return xs[i];
+}
+
+function consumeTemplate(template: any, previousResponses: any[][]) {
   dispatch({ type: ActionType.CONSUMING_TEMPLATE_START, payload: template.id });
   async function boundedSend({ template }: any, cb: ProcessFunctionCb<null>) {
-    await sendRequest(template);
+    await sendRequest(template, previousResponses);
     cb(null, null);
   }
 
@@ -40,14 +45,24 @@ function consumeTemplate(template: any) {
 export async function startTheTrain() {
   let state = store.getState();
   let templates = state.request.templates;
+  let responses = state.request.responses;
   dispatch({ type: ActionType.START_THE_TRAIN });
-  for (let template of templates) {
-    await consumeTemplate(template);
+
+  for (let i = 0; i < templates.length; i++) {
+    let template = templates[i];
+
+    // build previous responses to be passed to the template
+    let previousResponses = [];
+    for (let j = 0; j < i; j++) {
+      previousResponses.push(responses[templates[j].id]);
+    }
+
+    await consumeTemplate(template, previousResponses);
   }
 }
 
 function getAdvancedRequest(template: any) {
-  return eval(`(previousResponses) => {\n${template.text}\n}`);
+  return eval(`(responseChain) => {\n${template.text}\n}`);
 }
 
 function roughSizeOfObject(object: any) {
@@ -75,7 +90,7 @@ function roughSizeOfObject(object: any) {
   return bytes;
 }
 
-export async function sendRequest(template: any) {
+export async function sendRequest(template: any, previousResponses: any[][]) {
   dispatch({ type: ActionType.SEND_REQUEST, payload: { url: template.url } });
 
   try {
@@ -83,7 +98,14 @@ export async function sendRequest(template: any) {
     let res;
     if (template.type === RequestType.ADVANCED) {
       let callback = getAdvancedRequest(template);
-      let callbackRes = callback();
+
+      let previousResponsesChain = previousResponses.map(responses => {
+        let elem = { ...getRandomElement(responses) };
+        elem.headers = JSON.parse(elem.headers);
+        return elem;
+      });
+
+      let callbackRes = callback(previousResponsesChain);
       // check if returned value is a promise
       if (typeof callbackRes.then !== "function") {
         throw new Error("NO_PROMISE");
