@@ -124,7 +124,8 @@ export function requestReducer(
           count: 1,
           concurrency: 1,
           type: RequestType.BASIC,
-          verb: HttpVerb.GET
+          verb: HttpVerb.GET,
+          order: Object.keys(draft.templates).length
         });
 
         draft.responses[id] = [];

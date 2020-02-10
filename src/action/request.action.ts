@@ -37,9 +37,15 @@ function consumeTemplate(dispatch: Dispatch<any>, template: any) {
   });
 }
 
-export async function startTheTrain(dispatch: Dispatch<any>, templates: any[]) {
+export async function startTheTrain(
+  dispatch: Dispatch<any>,
+  templates: any[],
+  getState: any
+) {
   dispatch({ type: ActionType.START_THE_TRAIN });
   for (let template of templates) {
+    console.warn("consuming template state", getState());
+
     await consumeTemplate(dispatch, template);
   }
 }

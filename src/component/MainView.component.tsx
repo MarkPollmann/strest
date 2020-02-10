@@ -109,7 +109,7 @@ export function MainView() {
         <Row>
           <div className="flex-shrink-0">
             <div>
-              <div className="text-sm text-gray-700 px-2">Name</div>
+              <div className="text-sm text-gray-700">Name</div>
               <input
                 type="text"
                 className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-4 block w-full appearance-none leading-normal py-2"
@@ -117,7 +117,7 @@ export function MainView() {
                 placeholder="Request name"
                 onChange={updateTemplateName}
               />
-              <div className="text-sm text-gray-700 px-2">Size/Concurrency</div>
+              <div className="text-sm text-gray-700 mt-2">Size/Concurrency</div>
               <div className="flex flex-row items-center">
                 <input
                   type="number"

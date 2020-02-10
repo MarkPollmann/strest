@@ -13,7 +13,7 @@ import {
 import { Store } from "../Store";
 
 export function LeftBar() {
-  let { state, dispatch } = useContext(Store);
+  let { state, dispatch, getState } = useContext(Store);
   let selectedTemplateId = state.request.selectedTemplateId;
   let currentTemplateConsumed = getCurrentTemplateConsumed(state);
 
@@ -32,7 +32,7 @@ export function LeftBar() {
   }
 
   function startRequestSequence() {
-    startTheTrain(dispatch, state.request.templates);
+    startTheTrain(dispatch, state.request.templates, getState);
   }
 
   return (

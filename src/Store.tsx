@@ -53,7 +53,13 @@ export const createStoreProvider = (reducers: Record<string, () => any>) => ({
     next(persistedState || {}, reducers, { type: "INIT" })
   );
 
+  function getState() {
+    return state;
+  }
+
   return (
-    <Store.Provider value={{ state, dispatch }}>{children}</Store.Provider>
+    <Store.Provider value={{ state, dispatch, getState }}>
+      {children}
+    </Store.Provider>
   );
 };
