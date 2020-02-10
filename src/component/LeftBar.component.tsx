@@ -18,7 +18,7 @@ interface IProps {
   selectedTemplate: any;
   currentTemplateConsumed: any;
   templates: any;
-  processedData: any;
+  state: any;
 }
 
 function _LeftBar(props: IProps) {
@@ -46,11 +46,14 @@ function _LeftBar(props: IProps) {
         Workflow
       </div>
       {props.templates.map((template: any) => {
+        let processedData = getTemplateProcessedData(props.state, template.id);
         return (
           <div
             key={template.id}
             className={`border-b cursor-pointer ${
-              template.id === getSelectedTemplate ? "bg-blue-100" : "bg-white"
+              template.id === props.selectedTemplate?.id
+                ? "bg-blue-100"
+                : "bg-white"
             }`}
             onClick={() => selectTemplate(template.id)}
           >
@@ -76,7 +79,7 @@ function _LeftBar(props: IProps) {
 
               <div>
                 <div className="py-1">
-                  <div className="flex flex-row items-center">
+                  <div className="flex flex-row items-center flex-wrap">
                     <input
                       type="number"
                       className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-2 block w-24 mr-1 appearance-none leading-normal"
@@ -102,7 +105,7 @@ function _LeftBar(props: IProps) {
                   >
                     <Row vertical="center">
                       <div className="text-2xl font-bold mr-1">
-                        {props.processedData.average}
+                        {processedData.average}
                       </div>
                       <div className="text-gray-700 text-sm">
                         ms avg. resp. time
@@ -111,7 +114,7 @@ function _LeftBar(props: IProps) {
 
                     <Row vertical="center">
                       <div className="text-2xl font-bold mr-1">
-                        {props.processedData.errorRate}%
+                        {processedData.errorRate}%
                       </div>
                       <div className="text-sm text-gray-700 text-sm">
                         error rate
@@ -147,9 +150,9 @@ function mstp(state: any) {
   let selectedTemplate = getSelectedTemplate(state);
   return {
     selectedTemplate,
-    processedData: getTemplateProcessedData(state, selectedTemplate.id),
     currentTemplateConsumed: getCurrentTemplateConsumed(state),
-    templates: getTemplates(state)
+    templates: getTemplates(state),
+    state
   };
 }
 

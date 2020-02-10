@@ -48,9 +48,11 @@ function insertOrPlus1(obj: any, k: string) {
 
 // Selectors
 export function getSelectedTemplate(state: any) {
-  return state.request.templates.find(
+  let t = state.request.templates.find(
     (template: any) => template.id === state.request.selectedTemplateId
   );
+
+  return t;
 }
 
 export function getSelectedTemplateResponses(state: any) {
@@ -125,7 +127,7 @@ export function requestReducer(
         draft.templates.push({
           id,
           name: "",
-          url: null,
+          url: "",
           count: 1,
           concurrency: 1,
           type: RequestType.BASIC,
