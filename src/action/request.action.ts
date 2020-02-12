@@ -101,7 +101,9 @@ export async function sendRequest(template: any, previousResponses: any[][]) {
 
       let previousResponsesChain = previousResponses.map(responses => {
         let elem = { ...getRandomElement(responses) };
-        elem.headers = JSON.parse(elem.headers);
+        if (elem && elem.headers) {
+          elem.headers = JSON.parse(elem.headers);
+        }
         return elem;
       });
 
@@ -129,7 +131,7 @@ export async function sendRequest(template: any, previousResponses: any[][]) {
         url: res.url,
         templateId: template.id,
         body,
-        headers: JSON.stringify(res.headers),
+        headers: res.headers,
         time: finalTime - initialTime,
         startedAt: initialTime,
         endedAt: finalTime,
@@ -137,6 +139,7 @@ export async function sendRequest(template: any, previousResponses: any[][]) {
       }
     });
   } catch (e) {
+    console.warn("ROPO ERROR", e);
     switch (e.message) {
       case "NO_PROMISE":
         dispatch({

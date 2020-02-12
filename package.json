@@ -1,9 +1,9 @@
 {
-  "name": "stressman",
-  "productName": "stressman",
+  "name": "strest",
+  "productName": "strest",
   "version": "1.0.0",
   "description": "Electron App to test Http endpoints",
-  "main": ".webpack/main",
+  "main": "./.webpack/main",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
@@ -26,12 +26,13 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "stressman"
+            "name": "strest"
           }
         },
         {
           "name": "@electron-forge/maker-zip",
           "platforms": [
+            "darwin",
             "linux"
           ]
         },
@@ -71,13 +72,13 @@
     }
   },
   "devDependencies": {
-    "@electron-forge/cli": "6.0.0-beta.48",
-    "@electron-forge/maker-deb": "6.0.0-beta.48",
+    "@electron-forge/cli": "6.0.0-beta.49",
+    "@electron-forge/maker-deb": "6.0.0-beta.49",
     "@electron-forge/maker-dmg": "^6.0.0-beta.49",
-    "@electron-forge/maker-rpm": "6.0.0-beta.48",
-    "@electron-forge/maker-squirrel": "6.0.0-beta.48",
-    "@electron-forge/maker-zip": "6.0.0-beta.48",
-    "@electron-forge/plugin-webpack": "6.0.0-beta.48",
+    "@electron-forge/maker-rpm": "6.0.0-beta.49",
+    "@electron-forge/maker-squirrel": "6.0.0-beta.49",
+    "@electron-forge/maker-zip": "6.0.0-beta.49",
+    "@electron-forge/plugin-webpack": "6.0.0-beta.49",
     "@marshallofsound/webpack-asset-relocator-loader": "^0.5.0",
     "@types/better-queue": "^3.8.2",
     "@types/chance": "^1.0.8",

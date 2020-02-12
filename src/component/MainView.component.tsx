@@ -292,9 +292,9 @@ export function _MainView(props: IProps) {
                           <span className="text-gray-500">
                             (Just click to copy!)
                           </span>
-                          {response.headers}
+                          {JSON.stringify(response.headers)}
                         </div>
-                        {response.headers?.substring(0, 30)}
+                        {JSON.stringify(response.headers).substring(0, 30)}
                       </td>
                     </tr>
                   );
