@@ -109,8 +109,8 @@ export function _MainView(props: IProps) {
   }
 
   return (
-    <div className="w-full max-h-screen flex flex-col pt-64 relative">
-      <div className="p-4 absolute bg-white top-0 right-0 left-0 ">
+    <div className="w-full max-h-screen h-screen  flex flex-col pt-64 relative overflow-hidden">
+      <div className="p-2 absolute bg-white top-0 right-0 left-0 ">
         <Row wrap>
           <div className="flex-shrink-0">
             <div className="text-sm text-gray-700">Name</div>
@@ -232,8 +232,8 @@ export function _MainView(props: IProps) {
       <div className="overflow-y-scroll">
         <ul className="flex border-b">
           <li
-            className={`border-t border-r border-l ${tab === Tab.RESULTS &&
-              "bg-blue-100"} rounded-t p-2 ml-6`}
+            className={`border-r border-l ${tab === Tab.RESULTS ?
+              "border-t-2 border-blue-700" : "border-t"} rounded-t p-2 ml-2`}
             onClick={() => setTab(Tab.RESULTS)}
           >
             <a className="text-blue-700 hover:text-blue-800" href="#">
@@ -241,8 +241,8 @@ export function _MainView(props: IProps) {
             </a>
           </li>
           <li
-            className={`border-t border-r border-l ${tab === Tab.RESPONSES &&
-              "bg-blue-100"} rounded-t p-2 ml-2`}
+            className={`border-r border-l ${tab === Tab.RESPONSES ?
+              "border-t-2 border-blue-700" : "border-t"} rounded-t p-2 ml-2`}
             onClick={() => setTab(Tab.RESPONSES)}
           >
             <a className="text-blue-700 hover:text-blue-800" href="#">
@@ -274,10 +274,10 @@ export function _MainView(props: IProps) {
               <tbody>
                 {responses.map((response: any, idx: number) => {
                   return (
-                    <tr key={`response-row-${idx}`}>
-                      <td className="border px-4 py-2">{idx}</td>
-                      <td className="border px-4 py-2">{response.status}</td>
-                      <td className="border px-4 py-2 tooltip">
+                    <tr key={`response-row-${idx}`} className={idx % 2 === 0 ? "bg-gray-100" : "bg-white"}>
+                      <td align="right" className="border px-4 py-2">{idx}</td>
+                      <td align="right" className="border px-4 py-2">{response.status}</td>
+                      <td align="right" className="border px-4 py-2 tooltip">
                         <div className="tooltip-text border bg-white rounded p-3 -mt-6 -mr-6 rounded">
                           <span className="text-gray-500">
                             timestamps: {response.startedAt.toString()} -{" "}
@@ -286,10 +286,10 @@ export function _MainView(props: IProps) {
                         </div>
                         {response.time}
                       </td>
-                      <td className="border px-4 py-2 tooltip">
+                      <td className="border px-4 py-2 tooltip" >
                         <div className="tooltip-text border bg-white rounded p-3 -mt-6 -mr-6 rounded">
-                          <span className="text-gray-500">
-                            (Just click to copy!)
+                          <span className="text-gray-500 mr-1">
+                            (Click to copy)
                           </span>
                           {/* {response.body} */}
                         </div>
@@ -298,8 +298,8 @@ export function _MainView(props: IProps) {
                       </td>
                       <td className="border px-4 py-2 tooltip">
                         <div className="tooltip-text border bg-white rounded p-3 -mt-6 -mr-6 rounded">
-                          <span className="text-gray-500">
-                            (Just click to copy!)
+                          <span className="text-gray-500 mr-1">
+                            (Click to copy)
                           </span>
                           {JSON.stringify(response.headers)}
                         </div>
