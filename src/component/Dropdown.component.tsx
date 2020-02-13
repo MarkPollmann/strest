@@ -10,6 +10,7 @@ export function Dropdown<T>(props: IDropdownProps<T>) {
   let [open, setOpen] = useState(false);
 
   let selectedOption = props.options.find(op => op.value === props.value);
+
   return (
     <div>
       <div
@@ -19,7 +20,7 @@ export function Dropdown<T>(props: IDropdownProps<T>) {
         {selectedOption?.label}
       </div>
       {open && (
-        <div className="bg-blue-500 flex flex-col items-center text-white rounded mt-1 cursor-pointer">
+        <div className="bg-blue-500 w-24 p-1 flex flex-col items-center text-white rounded mt-1 cursor-pointer absolute">
           {props.options.map(op => (
             <div
               key={`${op.label}`}
@@ -27,6 +28,7 @@ export function Dropdown<T>(props: IDropdownProps<T>) {
                 props.onChange(op.value);
                 setOpen(false);
               }}
+              className="font-bold w-full text-center my-1 hover:bg-blue-300"
             >
               {op.label}
             </div>

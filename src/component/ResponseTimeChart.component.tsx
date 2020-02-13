@@ -9,9 +9,9 @@ export function ResponseTimeChart(props: IProps) {
   function generateChartData(canvas: any) {
     let ctx = canvas.getContext("2d");
 
-    let gradient = ctx.createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, "rgba(246, 36, 89, 0.7)");
-    gradient.addColorStop(1, "rgba(30, 139, 195, 0.7)");
+    let gradient = ctx.createLinearGradient(0, 400, 0, 0);
+    gradient.addColorStop(0, "rgba(30, 139, 195, 0.7)");
+    gradient.addColorStop(1, "rgba(246, 36, 89, 0.7)");
 
     let data = {
       labels: props.responses.map((_, idx) => idx + 1),
@@ -30,7 +30,10 @@ export function ResponseTimeChart(props: IProps) {
   return (
     <Line
       options={{
-        responsive: true
+        responsive: true,
+        legend: {
+          display: false
+        },
       }}
       data={generateChartData}
     />

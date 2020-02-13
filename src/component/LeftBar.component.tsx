@@ -1,18 +1,8 @@
 import React from "react";
-import { Row } from ".";
-import {
-  addNewTemplate,
-  selectTemplate,
-  startTheTrain,
-  updateTemplate
-} from "../action/request.action";
-import {
-  getTemplateProcessedData,
-  getCurrentTemplateConsumed,
-  getSelectedTemplate,
-  getTemplates
-} from "../reducer/request.reducer";
 import { connect } from "react-redux";
+import { Row } from ".";
+import { addNewTemplate, selectTemplate, startTheTrain, updateTemplate } from "../action/request.action";
+import { getCurrentTemplateConsumed, getSelectedTemplate, getTemplateProcessedData, getTemplates } from "../reducer/request.reducer";
 
 interface IProps {
   selectedTemplate: any;
@@ -41,62 +31,59 @@ function _LeftBar(props: IProps) {
   }
 
   return (
-    <div className="w-1/4 border-r h-screen flex-shrink-0">
-      <div className="uppercase tracking-wide text-sm text-blue-600 font-bold p-2 border-b">
-        Workflow
+    <div className="w-1/4 border-r h-screen flex-shrink-0 bg-gray-200">
+      <div className="uppercase tracking-wide text-sm text-blue-600 font-bold p-2 ">
+        Request Workflow
       </div>
       {props.templates.map((template: any) => {
         let processedData = getTemplateProcessedData(props.state, template.id);
         return (
           <div
             key={template.id}
-            className={`border-b cursor-pointer ${
+            className={`cursor-pointer bg-white ${
               template.id === props.selectedTemplate?.id
-                ? "bg-blue-100"
-                : "bg-white"
-            }`}
+                ? "border-r-2 border-l-2 border-blue-700"
+                : "border-r-2 border-l-2 border-white"
+              } rounded overflow-hidden shadow-lg m-2 mb-4`}
             onClick={() => selectTemplate(template.id)}
           >
-            <Row className="pt-2 px-2 flex-1">
-              {!!template.name && (
-                <div className="text-lg text-blue-500 flex-1">
-                  {template.name}
-                </div>
-              )}
-              {!template.name && (
-                <div className="text-lg text-gray-500 flex-1">No name</div>
-              )}
+            <Row className="pt-1 px-1 flex-1" vertical="center">
+
+              <div className="text-lg text-blue-500 flex-1">
+                {template.name} <span className="text-xs text-gray-500">({template.url.substring(0, 25) || "No url"})</span>
+              </div>
+
               {props.currentTemplateConsumed === template.id && (
                 <div className="text-sm text-gray-500">Executing...</div>
               )}
             </Row>
 
             <div className="p-2">
-              <div className="text-sm text-gray-600">{template.url}</div>
-              {!template.url && (
-                <div className="text-sm text-gray-500">No url</div>
-              )}
 
               <div>
                 <div className="py-1">
-                  <div className="flex flex-row items-center flex-wrap">
-                    <input
-                      type="number"
-                      className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-2 block w-24 mr-1 appearance-none leading-normal"
-                      value={template.count}
-                      placeholder="100"
-                      onChange={updateTemplateCount}
-                    />
-                    <div className="text-sm text-gray-700 mr-3"> requests </div>
-                    <input
-                      type="number"
-                      className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-2 block w-12 mr-1 appearance-none leading-normal"
-                      value={template.concurrency}
-                      placeholder="100"
-                      onChange={updateTemplateConcurrency}
-                    />
-                    <div className="text-sm text-gray-700">concurrently</div>
-                  </div>
+                  <Row horizontal="space-around">
+                    <div>
+                      <div className="text-sm text-gray-700 mr-3"> Requests </div>
+                      <input
+                        type="number"
+                        className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-2 block w-20 mr-1 appearance-none leading-normal"
+                        value={template.count}
+                        placeholder="100"
+                        onChange={updateTemplateCount}
+                      />
+                    </div>
+                    <div className="ml-4">
+                      <div className="text-sm text-gray-700">Concurrency</div>
+                      <input
+                        type="number"
+                        className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-2 block w-12 mr-1 appearance-none leading-normal"
+                        value={template.concurrency}
+                        placeholder="100"
+                        onChange={updateTemplateConcurrency}
+                      />
+                    </div>
+                  </Row>
 
                   <Row
                     vertical="center"
@@ -108,7 +95,7 @@ function _LeftBar(props: IProps) {
                         {processedData.average}
                       </div>
                       <div className="text-gray-700 text-sm">
-                        ms avg. resp. time
+                        ms avg.
                       </div>
                     </Row>
 

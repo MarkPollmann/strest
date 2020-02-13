@@ -13,7 +13,8 @@ export enum HttpVerb {
   GET = "GET",
   PUT = "PUT",
   DELETE = "DELETE",
-  OPTIONS = "OPTIONS"
+  OPTIONS = "OPTIONS",
+  PATCH = "PATCH"
 }
 
 const requestInitialState = {

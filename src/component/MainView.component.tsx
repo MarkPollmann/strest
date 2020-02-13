@@ -110,7 +110,7 @@ export function _MainView(props: IProps) {
 
   return (
     <div className="w-full max-h-screen flex flex-col pt-64 relative">
-      <div className="p-4 absolute bg-white top-0 right-0 left-0 border-b">
+      <div className="p-4 absolute bg-white top-0 right-0 left-0 ">
         <Row wrap>
           <div className="flex-shrink-0">
             <div className="text-sm text-gray-700">Name</div>
@@ -121,24 +121,29 @@ export function _MainView(props: IProps) {
               placeholder="Request name"
               onChange={updateTemplateName}
             />
-            <div className="text-sm text-gray-700 mt-2">Size/Concurrency</div>
             <div className="flex flex-row items-center">
-              <input
-                type="number"
-                className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-2 mr-1 block w-24 appearance-none leading-normal"
-                value={template.count}
-                placeholder="100"
-                onChange={updateTemplateCount}
-              />
-              <div className="text-sm text-gray-700 mr-3"> requests </div>
-              <input
-                type="number"
-                className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg mr-1 block w-12 appearance-none leading-normal"
-                value={template.concurrency}
-                placeholder="100"
-                onChange={updateTemplateConcurrency}
-              />
-              <div className="text-sm text-gray-700">concurrently</div>
+              <div>
+
+                <div className="text-sm text-gray-700 mr-3">Requests</div>
+                <input
+                  type="number"
+                  className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-1 mr-1 block w-24 appearance-none leading-normal"
+                  value={template.count}
+                  placeholder="100"
+                  onChange={updateTemplateCount}
+                />
+              </div>
+              <div className="ml-4">
+
+                <div className="text-sm text-gray-700">Concurrency</div>
+                <input
+                  type="number"
+                  className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-1 mr-1 block w-12 appearance-none leading-normal"
+                  value={template.concurrency}
+                  placeholder="100"
+                  onChange={updateTemplateConcurrency}
+                />
+              </div>
             </div>
           </div>
           <div className="flex-1 mx-4" style={{ minWidth: 200 }}>
@@ -148,7 +153,11 @@ export function _MainView(props: IProps) {
                 <Dropdown
                   options={[
                     { label: "POST", value: HttpVerb.POST },
-                    { label: "GET", value: HttpVerb.GET }
+                    { label: "GET", value: HttpVerb.GET },
+                    { label: "PUT", value: HttpVerb.PUT },
+                    { label: "DELETE", value: HttpVerb.DELETE },
+                    { label: "OPTIONS", value: HttpVerb.OPTIONS },
+                    { label: "PATCH", value: HttpVerb.PATCH }
                   ]}
                   onChange={updateTemplateVerb}
                   value={template.verb}
@@ -162,24 +171,24 @@ export function _MainView(props: IProps) {
                 />
               </Row>
             ) : (
-              <div className="focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg overflow-hidden flex-1">
-                <CodeMirror
-                  value={wrapRequestTextInCallback(template.text)}
-                  // editorDidMount={editorDidMount}
-                  options={{
-                    mode: "text/typescript"
-                  }}
-                  onBeforeChange={(editor, data, value) => {
-                    updateTemplateText(
-                      value.slice(
-                        templateTextPrefix.length,
-                        value.length - templateSuffix.length
-                      )
-                    );
-                  }}
-                />
-              </div>
-            )}
+                <div className="focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg overflow-hidden flex-1">
+                  <CodeMirror
+                    value={wrapRequestTextInCallback(template.text)}
+                    // editorDidMount={editorDidMount}
+                    options={{
+                      mode: "text/typescript"
+                    }}
+                    onBeforeChange={(editor, data, value) => {
+                      updateTemplateText(
+                        value.slice(
+                          templateTextPrefix.length,
+                          value.length - templateSuffix.length
+                        )
+                      );
+                    }}
+                  />
+                </div>
+              )}
             {!!template.error && (
               <div className="text-red-500 text-sm">
                 Error: {template.error}
@@ -197,7 +206,7 @@ export function _MainView(props: IProps) {
               {template.type === RequestType.ADVANCED && (
                 <div
                   className="text-sm text-blue-500 cursor-pointer ml-3"
-                  // onClick={resetTemplate}
+                // onClick={resetTemplate}
                 >
                   Reset
                 </div>
