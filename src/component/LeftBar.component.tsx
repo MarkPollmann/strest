@@ -91,7 +91,7 @@ function _LeftBar(props: IProps) {
                               <div className="py-1">
                                 <Row horizontal="space-around">
                                   <div>
-                                    <div className="text-sm text-gray-700 mr-3"> Requests </div>
+                                    <div className="text-sm text-gray-700 mr-3">Requests</div>
                                     <input
                                       type="number"
                                       className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-2 block w-20 mr-1 appearance-none leading-normal"

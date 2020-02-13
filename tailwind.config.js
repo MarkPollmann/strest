@@ -1,5 +1,6 @@
 module.exports = {
-  theme: {},
+  theme: {
+  },
   variants: {},
   plugins: []
 };

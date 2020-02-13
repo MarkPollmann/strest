@@ -15,15 +15,15 @@ function _ResponseDialogs(props: IProps) {
   return (
     <Row horizontal="space-around">
       <Card>
-        <div className="text-lg">Response Times</div>
+        <div>Response Times</div>
         <Row horizontal="space-between">
-          <div>Average</div>
+          <div className="text-sm">Average</div>
           <div>
             <span className="font-bold">{processedData.average}</span>ms
           </div>
         </Row>
         <Row horizontal="space-between">
-          <div>Min value</div>
+          <div className="text-sm">Min value</div>
           <div>
             <span className="font-bold">
               {processedData.min === Number.MAX_SAFE_INTEGER
@@ -34,7 +34,7 @@ function _ResponseDialogs(props: IProps) {
           </div>
         </Row>
         <Row horizontal="space-between">
-          <div>Max value</div>
+          <div className="text-sm">Max value</div>
           <div>
             <span className="font-bold">{processedData.max}</span>ms
           </div>
@@ -42,11 +42,11 @@ function _ResponseDialogs(props: IProps) {
       </Card>
 
       <Card>
-        <div className="text-lg">Response Counts</div>
+        <div>Response Counts</div>
         {Object.entries(processedData.codeCount).map(([k, v]: any) => {
           return (
             <Row key={`code-count-${k}`}>
-              <div className="flex-1">{k}</div>
+              <div className="flex-1 text-sm">{k}</div>
               <div className="font-bold">{v}</div>
             </Row>
           );
@@ -54,7 +54,7 @@ function _ResponseDialogs(props: IProps) {
       </Card>
 
       <Card>
-        <div className="text-lg">Bandwidth</div>
+        <div>Bandwidth</div>
         {/* <Row horizontal="space-between">
           <div>Sent</div>
           <div>
@@ -62,7 +62,7 @@ function _ResponseDialogs(props: IProps) {
           </div>
         </Row> */}
         <Row horizontal="space-between">
-          <div>ReceivedBytes</div>
+          <div className="text-sm">Received (bytes)</div>
           <div>
             <span className="font-bold">
               {processedData.receivedBytes || 0}
