@@ -5497,7 +5497,7 @@ promise-inflight@^1.0.1:
   resolved "https://registry.yarnpkg.com/promise-inflight/-/promise-inflight-1.0.1.tgz#98472870bf228132fcbdd868129bad12c3c029e3"
   integrity sha1-mEcocL8igTL8vdhoEputEsPAKeM=
 
-prop-types@^15.5.8, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@^15.5.8, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -5653,6 +5653,13 @@ rcedit@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/rcedit/-/rcedit-2.1.0.tgz#37ae6ad1fc8d7734b2e445ec3d378ace89d4076d"
   integrity sha512-Nrd/65LzMjFmKpS9d2fqIxVYdW0M8ovsN0PgZhCrPMQss2yznkp6/zjEQ1a9DzzoGv2uuN3yDJAeHybOD5ZNKA==
+
+react-activity@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/react-activity/-/react-activity-1.2.2.tgz#2afbcb78b9f5a1be9d725d06dcff6dbd83eb44ce"
+  integrity sha512-51E5FV1K7yUzSbeVq+wyApR8099ti3pcf8ol1WVRYXBhz0/TUYRQDrilxmxmD/oB6+vtpdXE2fEFCd5W6nIo2A==
+  dependencies:
+    prop-types "^15.6.1"
 
 react-beautiful-dnd@^12.2.0:
   version "12.2.0"

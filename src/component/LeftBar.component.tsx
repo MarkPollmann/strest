@@ -4,6 +4,8 @@ import { Row } from ".";
 import { addNewTemplate, selectTemplate, startTheTrain, updateTemplate, changeTemplateOrder } from "../action/request.action";
 import { getCurrentTemplateConsumed, getSelectedTemplate, getTemplateProcessedData, getTemplates } from "../reducer/request.reducer";
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
+// @ts-ignore
+import { Spinner } from 'react-activity';
 
 interface IProps {
   selectedTemplate: any;
@@ -50,8 +52,7 @@ function _LeftBar(props: IProps) {
             >
               {
 
-                props.templates.map((template: any) => {
-                  console.warn('ROPO TEMPLATE', template)
+                props.templates.map((template: any, idx: number) => {
                   let processedData = getTemplateProcessedData(props.state, template.id);
 
                   return (
@@ -76,11 +77,11 @@ function _LeftBar(props: IProps) {
                           <Row className="pt-1 px-1 flex-1" vertical="center">
 
                             <div className="text-lg text-blue-500 flex-1">
-                              {template.name} <span className="text-xs text-gray-500">({template.url.substring(0, 25) || "No url"})</span>
+                              <span className="font-xl font-bold text-gray-700">{idx + 1}</span> {template.name} <span className="text-xs text-gray-500">({template.url.substring(0, 25) || "No url"})</span>
                             </div>
 
                             {props.currentTemplateConsumed === template.id && (
-                              <div className="text-sm text-gray-500">Executing...</div>
+                              <Spinner color={"#28d76e"} />
                             )}
                           </Row>
 

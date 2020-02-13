@@ -115,6 +115,7 @@
     "immer": "^5.3.4",
     "lodash": "^4.17.15",
     "react": "^16.12.0",
+    "react-activity": "^1.2.2",
     "react-beautiful-dnd": "^12.2.0",
     "react-chartjs-2": "^2.9.0",
     "react-codemirror2": "^6.0.0",

@@ -1,4 +1,5 @@
 import "../assets/base.css";
+import 'react-activity/dist/react-activity.css';
 import React from "react";
 import { render } from "react-dom";
 import App from "./App";
