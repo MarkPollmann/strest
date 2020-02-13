@@ -187,3 +187,7 @@ export function updateTemplate(templateId: string, fields: any) {
 export function deleteTemplate(templateId: string) {
   dispatch({ type: ActionType.DELETE_TEMPLATE, payload: templateId });
 }
+
+export function changeTemplateOrder(templateId: string, order: number) {
+  dispatch({ type: ActionType.CHANGE_TEMPLATE_ORDER, payload: { templateId, order } });
+}

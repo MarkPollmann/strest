@@ -229,7 +229,7 @@ export function _MainView(props: IProps) {
       </div>
       {/* Main Content */}
 
-      <div className="flex-1 overflow-y-scroll">
+      <div className="overflow-y-scroll">
         <ul className="flex border-b">
           <li
             className={`border-t border-r border-l ${tab === Tab.RESULTS &&
@@ -260,7 +260,7 @@ export function _MainView(props: IProps) {
         )}
 
         {tab === Tab.RESPONSES && (
-          <div className=" w-full p-2">
+          <div className="w-full p-2">
             <table className="table-fixed w-full">
               <thead>
                 <tr>

@@ -105,6 +105,7 @@
     "typescript": "^3.7.0"
   },
   "dependencies": {
+    "@types/react-beautiful-dnd": "^12.1.1",
     "better-queue": "^3.8.10",
     "better-queue-memory": "^1.0.4",
     "chance": "^1.1.4",
@@ -114,6 +115,7 @@
     "immer": "^5.3.4",
     "lodash": "^4.17.15",
     "react": "^16.12.0",
+    "react-beautiful-dnd": "^12.2.0",
     "react-chartjs-2": "^2.9.0",
     "react-codemirror2": "^6.0.0",
     "react-dom": "^16.12.0",

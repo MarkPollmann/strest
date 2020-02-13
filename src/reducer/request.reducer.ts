@@ -187,11 +187,34 @@ export function requestReducer(
           (t: any) => t.id === action.payload.templateId
         );
 
-        console.warn("template error!", action);
-
         template.error = action.payload.errorMsg;
         break;
       }
+
+      case ActionType.CHANGE_TEMPLATE_ORDER: {
+        console.warn('Changing template order', action)
+        let i = action.payload.order - 1;
+        let j = action.payload.order;
+        while (i >= 0) {
+          draft.templates.find((t: any) => t.order === i).order--;
+          i--;
+        }
+
+        while (j < draft.templates.length) {
+          let t = draft.templates.find((t: any) => t.order === j);
+          if (t) {
+            t.order++;
+          }
+          j++;
+        }
+
+        draft.templates.find((t: any) => t.id === action.payload.templateId).order = action.payload.order;
+
+        draft.templates.sort((t1: any, t2: any) => t1.order - t2.order);
+
+        break;
+      }
+
       default:
         break;
     }
