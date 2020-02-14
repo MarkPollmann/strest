@@ -39,7 +39,7 @@ function _LeftBar(props: IProps) {
   }
 
   return (
-    <div className="w-1/4 border-r h-screen flex-shrink-0 bg-gray-200 overflow-y-hidden flex flex-col">
+    <div className="w-1/5 border-r h-screen flex-shrink-0 bg-gray-200 overflow-y-hidden flex flex-col">
       <div className="uppercase tracking-wide text-sm text-blue-600 font-bold p-2 ">
         Request Workflow
       </div>
@@ -90,8 +90,8 @@ function _LeftBar(props: IProps) {
                             {...provided.dragHandleProps}
                             className={`cursor-pointer bg-white ${
                               template.id === props.selectedTemplate?.id
-                                ? "border-r-2 border-l-2 border-blue-700"
-                                : "border-r-2 border-l-2 border-white"
+                                ? "border-2 border-blue-700"
+                                : "border-2 border-white"
                               } rounded overflow-hidden shadow-lg m-2 mb-4`}
                             onClick={() => selectTemplate(template.id)}
                           >

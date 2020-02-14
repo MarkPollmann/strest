@@ -113,19 +113,18 @@ export function _MainView(props: IProps) {
       <div className="p-2 absolute bg-white top-0 right-0 left-0 ">
         <Row wrap>
           <div className="flex-shrink-0">
-            <div className="text-sm text-gray-700">Name</div>
+            <div className="text-xs text-gray-700">Name</div>
             <input
               type="text"
-              className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-4 block w-full appearance-none leading-normal py-2"
+              className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-2 block w-full appearance-none leading-normal py-1 my-1"
               value={template.name}
               placeholder="Request name"
               onChange={updateTemplateName}
               autoFocus
             />
-            <div className="flex flex-row items-center">
+            <div className="flex flex-row items-center mt-2">
               <div>
-
-                <div className="text-sm text-gray-700 mr-3">Requests</div>
+                <div className="text-xs text-gray-700 mr-3">Requests</div>
                 <input
                   type="number"
                   className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-1 mr-1 block w-24 appearance-none leading-normal"
@@ -136,7 +135,7 @@ export function _MainView(props: IProps) {
               </div>
               <div className="ml-4">
 
-                <div className="text-sm text-gray-700">Concurrency</div>
+                <div className="text-xs text-gray-700">Concurrency</div>
                 <input
                   type="number"
                   className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-1 mr-1 block w-12 appearance-none leading-normal"
@@ -148,7 +147,7 @@ export function _MainView(props: IProps) {
             </div>
           </div>
           <div className="flex-1 mx-4" style={{ minWidth: 200 }}>
-            <div className="text-sm text-gray-700">Request</div>
+            <div className="text-xs text-gray-700">Request</div>
             {template.type === RequestType.BASIC ? (
               <Row className="focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg overflow-hidden">
                 <Dropdown
@@ -165,7 +164,7 @@ export function _MainView(props: IProps) {
                 />
                 <input
                   type="text"
-                  className="bg-white px-4 block w-full appearance-none leading-normal p-2"
+                  className="bg-white block w-full appearance-none leading-normal p-2"
                   value={template.url}
                   placeholder="https://google.com"
                   onChange={updateTemplateUrl}
