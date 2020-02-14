@@ -102,7 +102,12 @@ export async function sendRequest(template: any, previousResponses: any[][]) {
       let previousResponsesChain = previousResponses.map(responses => {
         let elem = { ...getRandomElement(responses) };
         if (elem && elem.headers) {
-          elem.headers = JSON.parse(elem.headers);
+          try {
+
+            elem.headers = JSON.parse(elem.headers);
+          } catch (e) {
+            console.log('Could not parse headers');
+          }
         }
         return elem;
       });

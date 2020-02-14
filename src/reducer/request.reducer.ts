@@ -102,7 +102,7 @@ export function getTemplateProcessedData(state: any, templateId: string) {
   }, res);
 
   res.average = Math.round(res.sum / responses.length);
-  res.errorRate = res.errorCount / responses.length;
+  res.errorRate = res.errorCount / responses.length * 100;
 
   return res;
 }
@@ -195,23 +195,24 @@ export function requestReducer(
       }
 
       case ActionType.CHANGE_TEMPLATE_ORDER: {
-        console.warn('Changing template order', action)
-        let i = action.payload.order - 1;
+
+        let t = draft.templates.find((t: any) => t.id === action.payload.templateId);
+        let i = t.order;
         let j = action.payload.order;
-        while (i >= 0) {
-          draft.templates.find((t: any) => t.order === i).order--;
-          i--;
-        }
 
-        while (j < draft.templates.length) {
-          let t = draft.templates.find((t: any) => t.order === j);
-          if (t) {
-            t.order++;
+        if (i > j) {
+          while (j <= i) {
+            draft.templates[j].order++;
+            j++;
           }
-          j++;
+        } else {
+          while (i <= j) {
+            draft.templates[i].order--;
+            i++;
+          }
         }
 
-        draft.templates.find((t: any) => t.id === action.payload.templateId).order = action.payload.order;
+        t.order = action.payload.order;
 
         draft.templates.sort((t1: any, t2: any) => t1.order - t2.order);
 

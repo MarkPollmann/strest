@@ -39,13 +39,13 @@ function _LeftBar(props: IProps) {
   }
 
   return (
-    <div className="w-1/5 border-r h-screen flex-shrink-0 bg-gray-200 overflow-y-hidden flex flex-col">
+    <div className="w-1/5 border-r h-screen max-h-screen flex-shrink-0 bg-gray-200 flex flex-col">
       <div className="uppercase tracking-wide text-sm text-blue-600 font-bold p-2 ">
         Request Workflow
       </div>
       <Row horizontal="space-around" className="my-2">
         <button
-          className="bg-white hover:bg-gray-400 text-gray-700 font-bold border-b-4  border-gray-500 hover:border-gray-500 rounded text-2xl w-12 tooltip"
+          className="bg-white hover:bg-gray-400 text-gray-700 font-bold border-b-4 border border-gray-500 hover:border-gray-500 rounded text-2xl w-12 tooltip"
           onClick={() => addNewTemplate()}
         >
           <div className="tooltip-text border bg-white rounded p-3 -mt-6 -mr-6 rounded text-gray-500 text-xs">
@@ -71,100 +71,101 @@ function _LeftBar(props: IProps) {
                 ref={provided.innerRef}
                 {...provided.droppableProps}
               >
-                {
+                {props.templates.map((template: any, idx: number) => {
+                  let processedData = getTemplateProcessedData(props.state, template.id);
 
-                  props.templates.map((template: any, idx: number) => {
-                    let processedData = getTemplateProcessedData(props.state, template.id);
+                  return (
+                    <Draggable
+                      draggableId={`${template.id}`}
+                      index={template.order}
+                      key={template.id}
+                    >
+                      {(provided, snapshot) => (
 
-                    return (
-                      <Draggable
-                        draggableId={`${template.id}`}
-                        index={template.order}
-                        key={template.id}
-                      >
-                        {(provided, snapshot) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          className={`cursor-pointer bg-white ${
+                            template.id === props.selectedTemplate?.id
+                              ? "bg-blue-200"
+                              : "bg-white"
+                            } rounded overflow-hidden shadow-lg m-2 mb-3 p-1`}
+                          onClick={() => selectTemplate(template.id)}
+                        >
+                          <Row className="pt-1 px-1 flex-1" vertical="center">
 
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            className={`cursor-pointer bg-white ${
-                              template.id === props.selectedTemplate?.id
-                                ? "border-2 border-blue-700"
-                                : "border-2 border-white"
-                              } rounded overflow-hidden shadow-lg m-2 mb-4`}
-                            onClick={() => selectTemplate(template.id)}
-                          >
-                            <Row className="pt-1 px-1 flex-1" vertical="center">
+                            <div className="text-blue-500 flex-1">
+                              <span className="font-lg font-bold text-gray-700">{idx + 1}</span> {template.name} <span className="text-xs text-gray-500">({template.url.substring(0, 25) || "No url"})</span>
+                            </div>
 
-                              <div className="text-blue-500 flex-1">
-                                <span className="font-lg font-bold text-gray-700">{idx + 1}</span> {template.name} <span className="text-xs text-gray-500">({template.url.substring(0, 25) || "No url"})</span>
-                              </div>
+                            {props.currentTemplateConsumed === template.id && (
+                              <Spinner color={"#28d76e"} />
+                            )}
+                          </Row>
 
-                              {props.currentTemplateConsumed === template.id && (
-                                <Spinner color={"#28d76e"} />
-                              )}
-                            </Row>
+                          <div className="p-2">
 
-                            <div className="p-2">
+                            <div>
+                              <div className="py-1">
+                                <Row horizontal="space-around">
+                                  <div>
+                                    <div className="text-xs text-gray-700 mr-3">Requests</div>
+                                    <input
+                                      type="number"
+                                      className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-2 block w-20 mr-1 appearance-none leading-normal"
+                                      value={template.count}
+                                      placeholder="100"
+                                      onChange={updateTemplateCount}
+                                    />
+                                  </div>
+                                  <div className="ml-4">
+                                    <div className="text-xs text-gray-700">Concurrency</div>
+                                    <input
+                                      type="number"
+                                      className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-2 block w-12 mr-1 appearance-none leading-normal"
+                                      value={template.concurrency}
+                                      placeholder="100"
+                                      onChange={updateTemplateConcurrency}
+                                    />
+                                  </div>
+                                </Row>
 
-                              <div>
-                                <div className="py-1">
-                                  <Row horizontal="space-around">
-                                    <div>
-                                      <div className="text-xs text-gray-700 mr-3">Requests</div>
-                                      <input
-                                        type="number"
-                                        className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-2 block w-20 mr-1 appearance-none leading-normal"
-                                        value={template.count}
-                                        placeholder="100"
-                                        onChange={updateTemplateCount}
-                                      />
+                                <Row
+                                  vertical="center"
+                                  horizontal="space-around"
+                                  className="p-2"
+                                >
+
+                                  <div className="flex flex-col items-center">
+
+                                    <div className="text-2xl font-bold mr-1">
+                                      {processedData.average}
                                     </div>
-                                    <div className="ml-4">
-                                      <div className="text-xs text-gray-700">Concurrency</div>
-                                      <input
-                                        type="number"
-                                        className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-2 block w-12 mr-1 appearance-none leading-normal"
-                                        value={template.concurrency}
-                                        placeholder="100"
-                                        onChange={updateTemplateConcurrency}
-                                      />
-                                    </div>
-                                  </Row>
+                                    <div className="text-gray-700 text-sm">
+                                      ms avg.
+                              </div>
+                                  </div>
 
-                                  <Row
-                                    vertical="center"
-                                    horizontal="space-around"
-                                    className="p-2"
-                                  >
-                                    <Row vertical="center">
-                                      <div className="text-2xl font-bold mr-1">
-                                        {processedData.average}
-                                      </div>
-                                      <div className="text-gray-700 text-sm">
-                                        ms avg.
-                              </div>
-                                    </Row>
 
-                                    <Row vertical="center">
-                                      <div className="text-2xl font-bold mr-1">
-                                        {processedData.errorRate}%
+                                  <div className="flex flex-col items-center">
+                                    <div className="text-2xl font-bold mr-1">
+                                      {processedData.errorRate}%
                               </div>
-                                      <div className="text-sm text-gray-700 text-sm">
-                                        error rate
+                                    <div className="text-sm text-gray-700 text-sm">
+                                      errors
                               </div>
-                                    </Row>
-                                  </Row>
-                                </div>
+                                  </div>
+                                </Row>
                               </div>
                             </div>
                           </div>
-                        )}
+                        </div>
+                      )}
 
-                      </Draggable>
-                    );
-                  })
+                    </Draggable>
+                  );
+                })
                 }
               </div>
             )}

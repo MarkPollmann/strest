@@ -1,6 +1,6 @@
 {
-  "name": "strest",
-  "productName": "strest",
+  "name": "Strest",
+  "productName": "Strest",
   "version": "1.0.0",
   "description": "Electron App to test Http endpoints",
   "main": "./.webpack/main",
@@ -20,13 +20,13 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "icon": "./assets/icons/smiley"
+        "icon": "./assets/icons/icon"
       },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "strest"
+            "name": "Strest"
           }
         },
         {

@@ -65,9 +65,9 @@ function _ResponseDialogs(props: IProps) {
           <div className="text-sm">Received</div>
           <div>
             <span className="font-bold">
-              {processedData.receivedBytes || 0}
+              {processedData.receivedBytes / 1000 || 0}
             </span>
-            b.
+            kb
           </div>
         </Row>
       </Card>

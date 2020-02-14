@@ -37,6 +37,14 @@ function wrapRequestTextInCallback(text: string) {
   return `${templateTextPrefix}${text}${templateSuffix}`;
 }
 
+function getRowColorClass(idx: number, status: number) {
+  if (status >= 300) {
+    return 'bg-red-100'
+  } else {
+    return idx % 2 === 0 ? "bg-gray-100" : "bg-white"
+  }
+}
+
 interface IProps {
   template: any;
   responses: any;
@@ -109,7 +117,7 @@ export function _MainView(props: IProps) {
   }
 
   return (
-    <div className="w-full max-h-screen h-screen  flex flex-col pt-64 relative overflow-hidden">
+    <div className={`w-full max-h-screen h-screen  flex flex-col relative overflow-hidden ${template.type === RequestType.ADVANCED ? "pt-64" : 'pt-32'}`}>
       <div className="p-2 absolute bg-white top-0 right-0 left-0 ">
         <Row wrap>
           <div className="flex-shrink-0">
@@ -274,7 +282,7 @@ export function _MainView(props: IProps) {
               <tbody>
                 {responses.map((response: any, idx: number) => {
                   return (
-                    <tr key={`response-row-${idx}`} className={idx % 2 === 0 ? "bg-gray-100" : "bg-white"}>
+                    <tr key={`response-row-${idx}`} className={getRowColorClass(idx, response.status)}>
                       <td align="right" className="border px-4 py-2">{idx}</td>
                       <td align="right" className="border px-4 py-2">{response.status}</td>
                       <td align="right" className="border px-4 py-2 tooltip">
