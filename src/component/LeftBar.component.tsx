@@ -39,133 +39,140 @@ function _LeftBar(props: IProps) {
   }
 
   return (
-    <div className="w-1/4 border-r h-screen flex-shrink-0 bg-gray-200">
+    <div className="w-1/4 border-r h-screen flex-shrink-0 bg-gray-200 overflow-y-hidden flex flex-col">
       <div className="uppercase tracking-wide text-sm text-blue-600 font-bold p-2 ">
         Request Workflow
       </div>
-      <DragDropContext onDragEnd={dragEnd}>
-        <Droppable droppableId="request-list">
-          {(provided, snapshot) => (
-            <div
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-            >
-              {
+      <Row horizontal="space-around" className="my-2">
+        <button
+          className="bg-white hover:bg-gray-400 text-gray-700 font-bold border-b-4  border-gray-500 hover:border-gray-500 rounded text-2xl w-12 tooltip"
+          onClick={() => addNewTemplate()}
+        >
+          <div className="tooltip-text border bg-white rounded p-3 -mt-6 -mr-6 rounded text-gray-500 text-xs">
+            Cmd + N
+          </div>
+          +
+        </button>
+        <button
+          className="bg-blue-500 hover:bg-blue-400 text-white font-bold  border-b-4 border-blue-700 hover:border-blue-500 rounded text-2xl w-12 tooltip"
+          onClick={startRequestSequence}
+        >
+          <div className="tooltip-text border bg-white rounded p-3 -mt-6 -mr-6 rounded text-gray-500 text-xs">
+            Cmd + R
+          </div>
+          {props.currentTemplateConsumed ? <Spinner color="white" size={10} /> : '▶'}
+        </button>
+      </Row>
+      <div className="flex-1 overflow-auto">
+        <DragDropContext onDragEnd={dragEnd}>
+          <Droppable droppableId="request-list">
+            {(provided, snapshot) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+              >
+                {
 
-                props.templates.map((template: any, idx: number) => {
-                  let processedData = getTemplateProcessedData(props.state, template.id);
+                  props.templates.map((template: any, idx: number) => {
+                    let processedData = getTemplateProcessedData(props.state, template.id);
 
-                  return (
-                    <Draggable
-                      draggableId={`${template.id}`}
-                      index={template.order}
-                      key={template.id}
-                    >
-                      {(provided, snapshot) => (
+                    return (
+                      <Draggable
+                        draggableId={`${template.id}`}
+                        index={template.order}
+                        key={template.id}
+                      >
+                        {(provided, snapshot) => (
 
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className={`cursor-pointer bg-white ${
-                            template.id === props.selectedTemplate?.id
-                              ? "border-r-2 border-l-2 border-blue-700"
-                              : "border-r-2 border-l-2 border-white"
-                            } rounded overflow-hidden shadow-lg m-2 mb-4`}
-                          onClick={() => selectTemplate(template.id)}
-                        >
-                          <Row className="pt-1 px-1 flex-1" vertical="center">
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className={`cursor-pointer bg-white ${
+                              template.id === props.selectedTemplate?.id
+                                ? "border-r-2 border-l-2 border-blue-700"
+                                : "border-r-2 border-l-2 border-white"
+                              } rounded overflow-hidden shadow-lg m-2 mb-4`}
+                            onClick={() => selectTemplate(template.id)}
+                          >
+                            <Row className="pt-1 px-1 flex-1" vertical="center">
 
-                            <div className="text-lg text-blue-500 flex-1">
-                              <span className="font-xl font-bold text-gray-700">{idx + 1}</span> {template.name} <span className="text-xs text-gray-500">({template.url.substring(0, 25) || "No url"})</span>
-                            </div>
+                              <div className="text-blue-500 flex-1">
+                                <span className="font-lg font-bold text-gray-700">{idx + 1}</span> {template.name} <span className="text-xs text-gray-500">({template.url.substring(0, 25) || "No url"})</span>
+                              </div>
 
-                            {props.currentTemplateConsumed === template.id && (
-                              <Spinner color={"#28d76e"} />
-                            )}
-                          </Row>
+                              {props.currentTemplateConsumed === template.id && (
+                                <Spinner color={"#28d76e"} />
+                              )}
+                            </Row>
 
-                          <div className="p-2">
+                            <div className="p-2">
 
-                            <div>
-                              <div className="py-1">
-                                <Row horizontal="space-around">
-                                  <div>
-                                    <div className="text-sm text-gray-700 mr-3">Requests</div>
-                                    <input
-                                      type="number"
-                                      className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-2 block w-20 mr-1 appearance-none leading-normal"
-                                      value={template.count}
-                                      placeholder="100"
-                                      onChange={updateTemplateCount}
-                                    />
-                                  </div>
-                                  <div className="ml-4">
-                                    <div className="text-sm text-gray-700">Concurrency</div>
-                                    <input
-                                      type="number"
-                                      className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-2 block w-12 mr-1 appearance-none leading-normal"
-                                      value={template.concurrency}
-                                      placeholder="100"
-                                      onChange={updateTemplateConcurrency}
-                                    />
-                                  </div>
-                                </Row>
-
-                                <Row
-                                  vertical="center"
-                                  horizontal="space-around"
-                                  className="p-2"
-                                >
-                                  <Row vertical="center">
-                                    <div className="text-2xl font-bold mr-1">
-                                      {processedData.average}
+                              <div>
+                                <div className="py-1">
+                                  <Row horizontal="space-around">
+                                    <div>
+                                      <div className="text-xs text-gray-700 mr-3">Requests</div>
+                                      <input
+                                        type="number"
+                                        className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-2 block w-20 mr-1 appearance-none leading-normal"
+                                        value={template.count}
+                                        placeholder="100"
+                                        onChange={updateTemplateCount}
+                                      />
                                     </div>
-                                    <div className="text-gray-700 text-sm">
-                                      ms avg.
-                            </div>
+                                    <div className="ml-4">
+                                      <div className="text-xs text-gray-700">Concurrency</div>
+                                      <input
+                                        type="number"
+                                        className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg px-2 block w-12 mr-1 appearance-none leading-normal"
+                                        value={template.concurrency}
+                                        placeholder="100"
+                                        onChange={updateTemplateConcurrency}
+                                      />
+                                    </div>
                                   </Row>
 
-                                  <Row vertical="center">
-                                    <div className="text-2xl font-bold mr-1">
-                                      {processedData.errorRate}%
-                            </div>
-                                    <div className="text-sm text-gray-700 text-sm">
-                                      error rate
-                            </div>
+                                  <Row
+                                    vertical="center"
+                                    horizontal="space-around"
+                                    className="p-2"
+                                  >
+                                    <Row vertical="center">
+                                      <div className="text-2xl font-bold mr-1">
+                                        {processedData.average}
+                                      </div>
+                                      <div className="text-gray-700 text-sm">
+                                        ms avg.
+                              </div>
+                                    </Row>
+
+                                    <Row vertical="center">
+                                      <div className="text-2xl font-bold mr-1">
+                                        {processedData.errorRate}%
+                              </div>
+                                      <div className="text-sm text-gray-700 text-sm">
+                                        error rate
+                              </div>
+                                    </Row>
                                   </Row>
-                                </Row>
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      )}
+                        )}
 
-                    </Draggable>
-                  );
-                })
-              }
-            </div>
-          )}
+                      </Draggable>
+                    );
+                  })
+                }
+              </div>
+            )}
 
 
-        </Droppable>
-      </DragDropContext>
-
-      <Row horizontal="space-around">
-        <button
-          className="bg-white hover:bg-blue-400 text-gray-700 font-bold py-2 px-4 border-b-4 border border-gray-500 hover:border-gray-500 rounded my-4"
-          onClick={() => addNewTemplate()}
-        >
-          ➕ Add request
-        </button>
-        <button
-          className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded my-4"
-          onClick={startRequestSequence}
-        >
-          🚄 Send All
-        </button>
-      </Row>
+          </Droppable>
+        </DragDropContext>
+      </div>
     </div>
   );
 }

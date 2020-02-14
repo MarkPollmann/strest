@@ -120,6 +120,7 @@ export function _MainView(props: IProps) {
               value={template.name}
               placeholder="Request name"
               onChange={updateTemplateName}
+              autoFocus
             />
             <div className="flex flex-row items-center">
               <div>

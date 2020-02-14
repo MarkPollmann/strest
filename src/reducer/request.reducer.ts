@@ -136,7 +136,10 @@ export function requestReducer(
           order: Object.keys(draft.templates).length
         });
 
+        draft.selectedTemplateId = id;
+
         draft.responses[id] = [];
+
         break;
       }
 

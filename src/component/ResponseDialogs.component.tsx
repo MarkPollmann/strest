@@ -62,12 +62,12 @@ function _ResponseDialogs(props: IProps) {
           </div>
         </Row> */}
         <Row horizontal="space-between">
-          <div className="text-sm">Received (bytes)</div>
+          <div className="text-sm">Received</div>
           <div>
             <span className="font-bold">
               {processedData.receivedBytes || 0}
             </span>
-            kb
+            b.
           </div>
         </Row>
       </Card>
