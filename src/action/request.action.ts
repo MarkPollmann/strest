@@ -6,6 +6,8 @@ import { dispatch, store } from "../Store";
 // it might be used by the user inputed text for generating the request
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import chance from "chance";
+let dialog = require('electron').remote.dialog;
+import fs from 'fs';
 
 function getRandomElement(xs: any[]) {
   let i = Math.floor(Math.random() * xs.length);
@@ -195,4 +197,32 @@ export function deleteTemplate(templateId: string) {
 
 export function changeTemplateOrder(templateId: string, order: number) {
   dispatch({ type: ActionType.CHANGE_TEMPLATE_ORDER, payload: { templateId, order } });
+}
+
+export function saveWorkflow() {
+  let path = dialog.showSaveDialogSync({
+    defaultPath: 'myStrestWorkflow.json'
+  })
+
+  if (path) {
+    dispatch({ type: ActionType.SAVE_WORKFLOW })
+    try {
+
+      const state = store.getState();
+      fs.writeFileSync(path, JSON.stringify(state));
+    } catch (e) {
+      // @TODO: Add proper user warning
+      console.warn('Workflow could not be saved')
+    }
+  }
+}
+
+export function loadWorkflow() {
+  let path = dialog.showOpenDialogSync({});
+
+  if (path) {
+    let state = JSON.parse(fs.readFileSync(path[0], 'utf-8'));
+
+    dispatch({ type: ActionType.LOAD_WORKFLOW, payload: state });
+  }
 }

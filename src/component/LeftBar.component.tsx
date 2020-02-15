@@ -1,11 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Row } from ".";
-import { addNewTemplate, selectTemplate, startTheTrain, updateTemplate, changeTemplateOrder } from "../action/request.action";
+import { addNewTemplate, selectTemplate, startTheTrain, updateTemplate, changeTemplateOrder, saveWorkflow, loadWorkflow } from "../action/request.action";
 import { getCurrentTemplateConsumed, getSelectedTemplate, getTemplateProcessedData, getTemplates } from "../reducer/request.reducer";
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 // @ts-ignore
 import { Spinner } from 'react-activity';
+
 
 interface IProps {
   selectedTemplate: any;
@@ -46,13 +47,13 @@ function _LeftBar(props: IProps) {
       <Row horizontal="space-around" className="my-2">
         <button
           className="bg-white hover:bg-gray-400 text-gray-700 font-bold border-b-4 border border-gray-500 hover:border-gray-500 rounded h-10 w-16"
-          onClick={startRequestSequence}
+          onClick={loadWorkflow}
         >
           Load
         </button>
         <button
           className="bg-white hover:bg-gray-400 text-gray-700 font-bold border-b-4 border border-gray-500 hover:border-gray-500 rounded h-10 w-16"
-          onClick={startRequestSequence}
+          onClick={saveWorkflow}
         >
           Save
         </button>
