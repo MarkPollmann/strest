@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, screen } from "electron";
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: any;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: any;
@@ -10,10 +10,11 @@ if (require("electron-squirrel-startup")) {
 }
 
 const createWindow = () => {
+  const { width, height } = screen.getPrimaryDisplay().workAreaSize
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    height: 600,
-    width: 800,
+    height,
+    width,
     webPreferences: {
       webSecurity: false,
       nodeIntegration: true,

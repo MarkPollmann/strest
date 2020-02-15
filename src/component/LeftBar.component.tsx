@@ -210,13 +210,13 @@ function _LeftBar(props: IProps) {
       </div>
       <div className="p-2">
         <button
-          className="bg-white hover:bg-gray-400 text-gray-700 font-bold border-b-4 border border-gray-500 hover:border-gray-500 rounded text-2xl w-full tooltip"
+          className="bg-white hover:bg-gray-400 text-gray-700 font-bold border-b-4 border border-gray-500 hover:border-gray-500 rounded p-2 w-full tooltip"
           onClick={addNewTemplate}
         >
           <div className="tooltip-text border bg-white rounded p-3 -mt-6 -mr-6 rounded text-gray-500 text-xs">
             Cmd + N
                   </div>
-          +
+          New Request
                 </button>
       </div>
     </div>
