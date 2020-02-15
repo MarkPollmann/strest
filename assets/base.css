@@ -41,3 +41,8 @@ body {
   right: 0;
   height: 100%;
 }
+
+.disable-scrollbars::-webkit-scrollbar {
+  width: 0px;
+  background: transparent; /* Chrome/Safari/Webkit */
+}

@@ -45,13 +45,16 @@ function _LeftBar(props: IProps) {
       </div>
       <Row horizontal="space-around" className="my-2">
         <button
-          className="bg-white hover:bg-gray-400 text-gray-700 font-bold border-b-4 border border-gray-500 hover:border-gray-500 rounded text-2xl w-12 tooltip"
-          onClick={() => addNewTemplate()}
+          className="bg-white hover:bg-gray-400 text-gray-700 font-bold border-b-4 border border-gray-500 hover:border-gray-500 rounded h-10 w-16"
+          onClick={startRequestSequence}
         >
-          <div className="tooltip-text border bg-white rounded p-3 -mt-6 -mr-6 rounded text-gray-500 text-xs">
-            Cmd + N
-          </div>
-          +
+          Load
+        </button>
+        <button
+          className="bg-white hover:bg-gray-400 text-gray-700 font-bold border-b-4 border border-gray-500 hover:border-gray-500 rounded h-10 w-16"
+          onClick={startRequestSequence}
+        >
+          Save
         </button>
         <button
           className="bg-blue-500 hover:bg-blue-400 text-white font-bold  border-b-4 border-blue-700 hover:border-blue-500 rounded text-2xl w-12 tooltip"
@@ -63,13 +66,14 @@ function _LeftBar(props: IProps) {
           {props.currentTemplateConsumed ? <Spinner color="white" size={10} /> : '▶'}
         </button>
       </Row>
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-y-auto disable-scrollbars">
         <DragDropContext onDragEnd={dragEnd}>
           <Droppable droppableId="request-list">
             {(provided, snapshot) => (
               <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}
+                className="max-h-full"
               >
                 {props.templates.map((template: any, idx: number) => {
                   let processedData = getTemplateProcessedData(props.state, template.id);
@@ -173,6 +177,18 @@ function _LeftBar(props: IProps) {
 
           </Droppable>
         </DragDropContext>
+
+      </div>
+      <div className="p-2">
+        <button
+          className="bg-white hover:bg-gray-400 text-gray-700 font-bold border-b-4 border border-gray-500 hover:border-gray-500 rounded text-2xl w-full tooltip"
+          onClick={addNewTemplate}
+        >
+          <div className="tooltip-text border bg-white rounded p-3 -mt-6 -mr-6 rounded text-gray-500 text-xs">
+            Cmd + N
+                  </div>
+          +
+                </button>
       </div>
     </div>
   );
