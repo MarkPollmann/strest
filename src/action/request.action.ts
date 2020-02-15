@@ -226,3 +226,11 @@ export function loadWorkflow() {
     dispatch({ type: ActionType.LOAD_WORKFLOW, payload: state });
   }
 }
+
+export function clearWorkflow() {
+
+}
+
+export function newWorkflow() {
+  dispatch({ type: ActionType.NEW_WORKFLOW })
+}

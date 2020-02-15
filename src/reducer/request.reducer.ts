@@ -17,23 +17,10 @@ export enum HttpVerb {
   PATCH = "PATCH"
 }
 
-const requestInitialState = {
+export const requestInitialState = {
   responses: {
-    "123": []
   },
   templates: [
-    {
-      id: "123",
-      name: "login",
-      verb: HttpVerb.GET,
-      url: "https://google.com",
-      text: "return fetch('https://google.com')",
-      type: RequestType.BASIC,
-      count: 1,
-      order: 0,
-      concurrency: 1,
-      error: null
-    }
   ],
   selectedTemplateId: "123",
   currentTemplateConsumed: null

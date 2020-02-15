@@ -1,12 +1,20 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Row } from ".";
-import { addNewTemplate, selectTemplate, startTheTrain, updateTemplate, changeTemplateOrder, saveWorkflow, loadWorkflow } from "../action/request.action";
-import { getCurrentTemplateConsumed, getSelectedTemplate, getTemplateProcessedData, getTemplates } from "../reducer/request.reducer";
+import { Row, Dropdown } from ".";
+import { addNewTemplate, selectTemplate, startTheTrain, updateTemplate, changeTemplateOrder, saveWorkflow, loadWorkflow, newWorkflow, clearWorkflow } from "../action/request.action";
+import { getCurrentTemplateConsumed, getSelectedTemplate, getTemplateProcessedData, getTemplates, HttpVerb } from "../reducer/request.reducer";
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 // @ts-ignore
 import { Spinner } from 'react-activity';
 
+
+enum WorkflowAction {
+  RUN,
+  SAVE,
+  LOAD,
+  NEW,
+  CLEAR
+}
 
 interface IProps {
   selectedTemplate: any;
@@ -39,33 +47,53 @@ function _LeftBar(props: IProps) {
     changeTemplateOrder(result.draggableId, result.destination?.index || 0);
   }
 
+  function runAction(action: WorkflowAction) {
+    switch (action) {
+      case WorkflowAction.RUN:
+        startTheTrain();
+        break;
+
+      case WorkflowAction.SAVE:
+        saveWorkflow();
+        break;
+
+      case WorkflowAction.LOAD:
+        loadWorkflow();
+        break;
+
+      case WorkflowAction.NEW:
+        newWorkflow();
+        break;
+
+      case WorkflowAction.CLEAR:
+        clearWorkflow();
+        break;
+
+      default:
+        break;
+    }
+  }
+
   return (
     <div className="w-1/5 border-r h-screen max-h-screen flex-shrink-0 bg-gray-200 flex flex-col">
-      <div className="uppercase tracking-wide text-sm text-blue-600 font-bold p-2 ">
-        Request Workflow
-      </div>
       <Row horizontal="space-around" className="my-2">
-        <button
-          className="bg-white hover:bg-gray-400 text-gray-700 font-bold border-b-4 border border-gray-500 hover:border-gray-500 rounded h-10 w-16"
-          onClick={loadWorkflow}
-        >
-          Load
-        </button>
-        <button
-          className="bg-white hover:bg-gray-400 text-gray-700 font-bold border-b-4 border border-gray-500 hover:border-gray-500 rounded h-10 w-16"
-          onClick={saveWorkflow}
-        >
-          Save
-        </button>
-        <button
-          className="bg-blue-500 hover:bg-blue-400 text-white font-bold  border-b-4 border-blue-700 hover:border-blue-500 rounded text-2xl w-12 tooltip"
-          onClick={startRequestSequence}
-        >
-          <div className="tooltip-text border bg-white rounded p-3 -mt-6 -mr-6 rounded text-gray-500 text-xs">
-            Cmd + R
-          </div>
-          {props.currentTemplateConsumed ? <Spinner color="white" size={10} /> : '▶'}
-        </button>
+        <div className="uppercase tracking-wide text-sm text-blue-600 font-bold p-2 ">
+          Workflow
+        </div>
+        <Dropdown
+          options={[
+            { label: "Run", value: WorkflowAction.RUN },
+            { label: "New", value: WorkflowAction.NEW },
+            { label: "Save", value: WorkflowAction.SAVE },
+            { label: "Load", value: WorkflowAction.LOAD },
+            // { label: "Clear", value: WorkflowAction.CLEAR },
+
+          ]}
+          onChange={runAction}
+          mainCallback={startTheTrain}
+          value={WorkflowAction.RUN}
+          tooltip="Cmd + R"
+        />
       </Row>
       <div className="flex-1 overflow-y-auto disable-scrollbars">
         <DragDropContext onDragEnd={dragEnd}>

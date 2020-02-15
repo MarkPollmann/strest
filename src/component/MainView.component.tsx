@@ -17,6 +17,7 @@ import { Controlled as CodeMirror } from "react-codemirror2";
 import { connect } from "react-redux";
 require("codemirror/mode/javascript/javascript");
 require("codemirror/lib/codemirror.css");
+import smiley from '../../assets/icons/smiley.png';
 
 enum Tab {
   RESULTS = "RESULTS",
@@ -57,7 +58,29 @@ export function _MainView(props: IProps) {
   let [tab, setTab] = useState<Tab>(Tab.RESULTS);
 
   if (!template) {
-    return <div>No template selected</div>;
+    return <div className="w-full h-full flex flex-col items-center justify-center">
+      <Row vertical="center">
+
+        <img src={smiley} className="h-32 w-32 my-12 mr-4" />
+        <div className="text-3xl font-mono">
+          Strest
+        </div>
+      </Row>
+      <div className="text-gray-700 w-2/3">
+        <p className="my-1">
+          Strest is an open source app to do stress testing of your HTTP endpoints, everything is done locally so you don't need to configure proxies/firewalls/whitelists, however sometimes you might need to crank the numbers and fire more requests than a single machine can handle, therefore a paid SaaS service will be available shortly.
+        </p>
+        <p className="my-1">
+          In the meantime you can <a href="https://github.com/ospfranco/strest" className="text-blue-500">contribute</a> or send me an <a href="mailto:ospfranco@protonmail.com" className="text-blue-500">e-mail</a>.
+        </p>
+        <p className="my-2 text-sm">
+          Cmd + N to create a new request
+        </p>
+        <p className="my-2 text-sm">
+          Cmd + R to run the workflow
+        </p>
+      </div>
+    </div>;
   }
 
   function sendOneRequest() {
@@ -172,7 +195,7 @@ export function _MainView(props: IProps) {
                 />
                 <input
                   type="text"
-                  className="bg-white block w-full appearance-none leading-normal p-2"
+                  className="bg-white block w-full appearance-none leading-normal p-1 ml-2"
                   value={template.url}
                   placeholder="https://google.com"
                   onChange={updateTemplateUrl}

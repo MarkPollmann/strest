@@ -1,6 +1,6 @@
 import { combineReducers, createStore, compose, AnyAction } from "redux";
 // import _ from "lodash";
-import { requestReducer } from "./reducer";
+import { requestReducer, requestInitialState } from "./reducer";
 import { persistStore, persistReducer } from "redux-persist";
 
 import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
@@ -9,6 +9,10 @@ import { ActionType } from "./action/ActionType.enum";
 let persistConfig = {
   key: "root",
   storage
+};
+
+let initialState = {
+  request: requestInitialState
 };
 
 let reducer = combineReducers<any, AnyAction>({
@@ -21,12 +25,16 @@ let masterReducer = (state: any, action: any) => {
     return action.payload;
   }
 
+  if (action.type === ActionType.NEW_WORKFLOW) {
+    return reducer(initialState, action);
+  }
+
   return reducer(state, action);
 }
 
 let persistedReducer = persistReducer(persistConfig, masterReducer);
 
-let initialState = {};
+
 
 // // @ts-ignore
 // let complexCompose = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
