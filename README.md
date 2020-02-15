@@ -1,11 +1,10 @@
 # Strest
 
 <img src="https://github.com/ospfranco/strest/raw/master/assets/icons/smiley.png" alt="logo" width="200"/>
-![Logo](https://github.com/ospfranco/strest/raw/master/assets/icons/smiley.png "Logo")
 
 Strest is an open source electron app to stress test your HTTP endpoints.
 
-![Strest App](https://github.com/ospfranco/strest/raw/master/assets/strest.png "Strest App")
+![Strest App](https://github.com/ospfranco/strest/raw/master/assets/screenshots/strest.png "Strest App")
 
 - Easily chain requests/responses to do complex workflows, ex. loging in, setting headers, performing a subsequent request.
 - Presents you with detailed information on how your service is performing and other metrics you care about.
